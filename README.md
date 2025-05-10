@@ -10,7 +10,8 @@ This project is a backend API for an e-commerce platform built with [NestJS](htt
 - **TypeORM** — ORM for PostgreSQL integration
 - **PostgreSQL** — Relational database
 - **Jest** — Unit testing framework
-- **Docker** — Containerized development environment
+- **Terraform** — Infrastructure provisioning
+- **Localstack** - (optional) to run locally
 
 ---
 
@@ -18,12 +19,44 @@ This project is a backend API for an e-commerce platform built with [NestJS](htt
 
 ### Prerequisites
 
-- Docker + Docker Compose
 - Node.js (v18+)
+- Terraform (v1.5+)
+- PostgreSQL CLI (e.g., `psql`) or database GUI (e.g., DBeaver)
+- Localstack (v3.5+)
 
-## Running Locally with localstack
+### 1. Provision Infrastructure with Terraform
 
-@todo
+Navigate to the `infrastructure/` directory:
+
+```bash
+cd infrastructure/
+terraform init
+terraform apply
+```
+
+This will provision the following infrastructure on AWS:
+
+- **VPC —** Isolated network with subnets, route tables, and internet gateway
+
+- **Security Groups —** Firewall rules for API and database access
+
+- **IAM Roles and Policies —** Roles for EC2 and API Gateway with least-privilege access
+
+- **EC2 Instance —** Hosts the NestJS API application in a containerized environment (e.g., using Docker on EC2)
+
+- **RDS (PostgreSQL) —** Managed PostgreSQL instance used by the API
+
+- **API Gateway —** Public-facing HTTP gateway to route requests to the EC2/NestJS backend
+
+- **SSM Parameter Store —** Secure storage of environment variables and secrets
+
+### 2. Configure Environment Variables
+
+Create a .env file in the project root:
+
+```js
+DATABASE_URL=postgresql://user:password@host:port/dbname
+```
 
 ## 🗂️ Project Structure
 
