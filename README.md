@@ -55,7 +55,8 @@ This will provision the following infrastructure on AWS:
 Create a .env file in the project root:
 
 ```js
-DATABASE_URL=postgresql://user:password@host:port/dbname
+DATABASE_URL = 'postgresql://user:password@host:port/dbname';
+API_PORT = '';
 ```
 
 ## 🗂️ Project Structure
