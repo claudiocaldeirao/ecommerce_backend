@@ -5,6 +5,7 @@ import { typeOrmConfig } from './config/typeorm.config';
 import { validationSchema } from './config/validation.schema';
 import { HealthModule } from './health/health.module';
 import { ProductModule } from './product/product.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ProductModule } from './product/product.module';
     TypeOrmModule.forRootAsync(typeOrmConfig),
     HealthModule,
     ProductModule,
+    UserModule,
   ],
 })
 export class AppModule {}
