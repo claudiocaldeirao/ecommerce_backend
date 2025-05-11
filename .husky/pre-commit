@@ -1,1 +1,1 @@
-npm run lint-staged
+npm run lint-staged && detect-secrets audit .secrets.baseline

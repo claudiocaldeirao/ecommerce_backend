@@ -91,6 +91,36 @@ The system follows a Domain-Driven Design (DDD) approach.
 npm run test
 ```
 
+### 🔐 Secrets Detection
+
+This project uses detect-secrets to identify secrets that may have been accidentally committed to the source code (such as API keys, tokens, or passwords).
+
+#### ✅ Setup and Usage
+
+**1 -** Install the tool:
+
+```bash
+python3 -m pip install detect-secrets
+```
+
+**2 -** Create or update the baseline:
+
+This generates or updates the .secrets.baseline file with detected secrets. The pnpm-lock.yaml file will be excluded from the scan:
+
+```bash
+detect-secrets scan --update .secrets.baseline --exclude-files pnpm-lock.yaml
+```
+
+**3 -** Audit detected secrets:
+
+Review and classify any potential secrets found in the baseline:
+
+```bash
+detect-secrets audit .secrets.baseline
+```
+
+⚠️ Make sure to include the .secrets.baseline file in version control to track detected secrets over time, but never commit files that contain actual sensitive data.
+
 ### 📄 License
 
 This project is licensed under the [MIT License](LISCENCE).
