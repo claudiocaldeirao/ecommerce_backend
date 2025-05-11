@@ -58,7 +58,7 @@ This document describes the domain structure and core entities of the E-Commerce
 ## 6. Authentication and Authorization
 
 - `User`:
-  - `id`, `name`
+  - `id`, `name`, `email`, `hashed_password`
 - `Role`:
   - `id`, `name`
 - `Permission`:

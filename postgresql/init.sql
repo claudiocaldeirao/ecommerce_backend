@@ -92,7 +92,11 @@ CREATE TABLE DeliveryStatus (
 -- Auth & Authz
 CREATE TABLE "User" (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100)
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    hashed_password TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Role (
@@ -206,9 +210,9 @@ INSERT INTO Carrier (id, name) VALUES (1, 'Correios');
 INSERT INTO DeliveryStatus (id) VALUES (1);
 
 -- Auth
-INSERT INTO "User" (id, name) VALUES
-(1, 'admin'),
-(2, 'cliente');
+INSERT INTO "User" (id, name, email, hashed_password, created_at, updated_at) VALUES
+(1, 'admin', 'admin@example.com', '$2a$10$7k7XUBYf4prTOmYMYZ8HtOCeFLz7OAt70pU5ltVyyg4qls/pFwDAu', NOW(), NOW()),
+(2, 'cliente', 'cliente@example.com', '$2a$10$7k7XUBYf4prTOmYMYZ8HtOCeFLz7OAt70pU5ltVyyg4qls/pFwDAu', NOW(), NOW());
 
 INSERT INTO Role (id, name) VALUES
 (1, 'Admin'),
