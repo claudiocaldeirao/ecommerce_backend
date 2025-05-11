@@ -4,10 +4,12 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.entity';
 import { RegisterDto } from './dto/register.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly configService: ConfigService,
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
   ) {}
@@ -40,7 +42,10 @@ export class AuthService {
       throw new UnauthorizedException('Email already in use');
     }
 
-    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const hashedPassword = await bcrypt.hash(
+      data.password,
+      this.configService.get<string>('BCRYPT_SALT_ROUNDS'),
+    );
 
     const newUser = await this.usersService.create(
       data.name,
