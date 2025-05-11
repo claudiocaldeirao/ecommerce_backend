@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { typeOrmConfig } from './config/typeorm.config';
 import { validationSchema } from './config/validation.schema';
 import { HealthModule } from './health/health.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { HealthModule } from './health/health.module';
     }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
     HealthModule,
+    ProductModule,
   ],
 })
 export class AppModule {}
