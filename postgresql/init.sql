@@ -2,6 +2,9 @@
 -- Schema creation
 -- ===========================
 
+-- Extensions
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
 -- Customers
 CREATE TABLE Customer (
     id SERIAL PRIMARY KEY,
@@ -91,7 +94,7 @@ CREATE TABLE DeliveryStatus (
 
 -- Auth & Authz
 CREATE TABLE "User" (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     hashed_password TEXT NOT NULL,
@@ -211,8 +214,8 @@ INSERT INTO DeliveryStatus (id) VALUES (1);
 
 -- Auth
 INSERT INTO "User" (id, name, email, hashed_password, created_at, updated_at) VALUES
-(1, 'admin', 'admin@example.com', '$2a$10$7k7XUBYf4prTOmYMYZ8HtOCeFLz7OAt70pU5ltVyyg4qls/pFwDAu', NOW(), NOW()),
-(2, 'cliente', 'cliente@example.com', '$2a$10$7k7XUBYf4prTOmYMYZ8HtOCeFLz7OAt70pU5ltVyyg4qls/pFwDAu', NOW(), NOW());
+('550e8400-e29b-41d4-a716-446655440000', 'admin', 'admin@example.com', '$2a$10$7k7XUBYf4prTOmYMYZ8HtOCeFLz7OAt70pU5ltVyyg4qls/pFwDAu', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440001', 'cliente', 'cliente@example.com', '$2a$10$7k7XUBYf4prTOmYMYZ8HtOCeFLz7OAt70pU5ltVyyg4qls/pFwDAu', NOW(), NOW());
 
 INSERT INTO Role (id, name) VALUES
 (1, 'Admin'),
