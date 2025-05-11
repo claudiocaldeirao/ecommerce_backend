@@ -52,12 +52,7 @@ This will provision the following infrastructure on AWS:
 
 ### 2. Configure Environment Variables
 
-Create a .env file in the project root:
-
-```js
-DATABASE_URL = 'postgresql://user:password@host:port/dbname';
-API_PORT = '';
-```
+Create a .env file in the project root following this [schema](src/config/validation.schema.ts).
 
 ## 🗂️ Project Structure
 
