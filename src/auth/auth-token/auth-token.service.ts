@@ -10,8 +10,8 @@ export class AuthTokenService {
     private readonly repo: Repository<AuthToken>,
   ) {}
 
-  async saveToken(email: string, token: string, expiresAt: Date) {
-    const authToken = this.repo.create({ email, token, expiresAt });
+  async saveToken(userId: string, token: string, expiresAt: Date) {
+    const authToken = this.repo.create({ userId, token, expiresAt });
     return this.repo.save(authToken);
   }
 

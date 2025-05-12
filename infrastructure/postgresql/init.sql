@@ -109,8 +109,8 @@ CREATE TABLE Role (
 
 CREATE TABLE jwt_token (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
     token TEXT NOT NULL UNIQUE,
-    email VARCHAR(100) NOT NULL UNIQUE,
     expires_at TIMESTAMP NOT NULL,
     revoked BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT now(),

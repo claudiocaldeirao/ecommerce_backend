@@ -42,7 +42,7 @@ export class AuthService {
     const decoded = this.jwtService.decode(token) as { exp: number };
     const expiresAt = new Date(decoded.exp * 1000);
 
-    await this.authTokenService.saveToken(user.email, token, expiresAt);
+    await this.authTokenService.saveToken(user.id, token, expiresAt);
 
     return {
       access_token: token,

@@ -4,9 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique,
 } from 'typeorm';
 
 @Entity('jwt_token')
+@Unique(['token'])
 export class AuthToken {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -14,8 +16,8 @@ export class AuthToken {
   @Column({ unique: true })
   token: string;
 
-  @Column()
-  email: string;
+  @Column({ name: 'user_id', type: 'uuid' })
+  userId: string;
 
   @Column({ name: 'expires_at', type: 'timestamp' })
   expiresAt: Date;
