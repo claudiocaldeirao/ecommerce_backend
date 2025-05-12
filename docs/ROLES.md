@@ -35,5 +35,5 @@
 
 | **Name**    | **Description**                                                                                                      |
 | ----------- | -------------------------------------------------------------------------------------------------------------------- |
-| `Ddveloper` | Responsible for developing and maintaining the application code, APIs, integrations, and resolving technical issues. |
+| `Developer` | Responsible for developing and maintaining the application code, APIs, integrations, and resolving technical issues. |
 | `analyst`   | Has access to dashboards and reports focused on sales data analysis, user behavior, and system performance.          |

@@ -11,54 +11,39 @@ This document describes the domain structure and core entities of the E-Commerce
 
 ## 2. Shopping Cart
 
-- `Cart`:
-  - `id`, `customer_id`
-- `CartItem`:
+- `cart`:
+  - `id`, `user_id`
+- `cart_item`:
   - `id`, `product_id`, `quantity`
 
 ---
 
 ## 3. Orders and Payments
 
-- `Order`:
-  - `id`, `customer_id`, `date`, `status`
-- `Invoice`:
+- `order_record`:
+  - `id`, `user_id`, `date`, `status`
+- `order_invoice`:
   - `id`, `order_id`
-- `Transaction`:
+- `order_transaction`:
   - `id`, `total_amount`, `description`
 
 ---
 
-## 4. Customers
+## 4. Users
 
-- `Customer`:
-  - `id`, `name`, `email`, `birthdate`
-- `Address`:
-  - `id`, `customer_id`, `street`, `city`
-- `Profile`:
-  - `id`, `customer_id`, `photo`
-- `Preferences`:
-  - `id`, `customer_id`, `language`
-
----
-
-## 5. Shipping and Logistics
-
-- `Delivery`:
-  - `id`, `order_id`
-- `Tracking`:
-  - `code`
-- `Carrier`:
-  - `id`, `name`
-- `DeliveryStatus`:
-  - `id`
+- `user_account`:
+  - `id`, `name`, `email`, `birthdate`, `password_hash`, `created_at`, `updated_at`
+- `user_address`:
+  - `id`, `user_id`, `street`, `city`
+- `user_profile`:
+  - `id`, `user_id`, `photo`
+- `user_preferences`:
+  - `id`, `user_id`, `language`
 
 ---
 
-## 6. Authentication and Authorization
+## 5. Authentication and Authorization
 
-- `app_user`:
-  - `id`, `name`, `email`, `password_hash`, `created_at`, `updated_at`
 - `role`:
   - `id`, `name`
 - `user_role`:
@@ -68,33 +53,24 @@ This document describes the domain structure and core entities of the E-Commerce
 
 ---
 
-## 7. Promotions and Discounts
+## 6. Shipping and Logistics
 
-- `Coupon`:
-  - `id`, `code`, `validity`
-- `DiscountRule`:
-  - `id`, `type`, `value`
-- `Campaign`:
-  - `id`, `name`
-
----
-
-## 8. Administration and Backoffice
-
-- `OrderDashboard`:
+- `delivery`:
   - `id`, `order_id`
-- `ProductManagement`:
-  - `id`, `product_id`
-- `Reports`:
-  - `id`, `customer_id`
+- `tracking`:
+  - `code`
+- `carrier`:
+  - `id`, `name`
+- `delivery_status`:
+  - `id`
 
 ---
 
-## 9. Support and After-Sales
+## 7. Support and After-Sales
 
-- `ReturnRequest`:
-  - `id`, `customer_id`
-- `SupportTicket`:
-  - `id`, `customer_id`, `description`
-- `Feedback`:
-  - `id`, `customer_id`
+- `return_request`:
+  - `id`, `user_id`
+- `support_ticket`:
+  - `id`, `user_id`, `description`
+- `feedback`:
+  - `id`, `user_id`
