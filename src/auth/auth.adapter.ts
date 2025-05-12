@@ -12,7 +12,7 @@ export class AuthAdapter {
     const user = await this.userService.findByEmail(email);
     if (!user) return null;
 
-    return new UserCredentialsDto(user.id, user.email, user.hashed_password);
+    return new UserCredentialsDto(user.id, user.email, user.passwordHash);
   }
 
   async registerUser(
@@ -21,6 +21,6 @@ export class AuthAdapter {
     passwordHash: string,
   ): Promise<UserCredentialsDto> {
     const user = await this.userService.create(email, name, passwordHash);
-    return new UserCredentialsDto(user.id, user.email, user.hashed_password);
+    return new UserCredentialsDto(user.id, user.email, user.passwordHash);
   }
 }

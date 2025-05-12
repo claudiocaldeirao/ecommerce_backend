@@ -57,14 +57,12 @@ This document describes the domain structure and core entities of the E-Commerce
 
 ## 6. Authentication and Authorization
 
-- `User`:
-  - `id`, `name`, `email`, `hashed_password`
+- `app_user`:
+  - `id`, `name`, `email`, `password_hash`, `created_at`, `updated_at`
 - `Role`:
   - `id`, `name`
-- `Permission`:
-  - `id`, `value`
-- `Token`:
-  - `id`
+- `jwt_token`:
+  - `id`, `email`, `expires_at`, `created_at`, `updated_at`, `revoked`
 
 ---
 

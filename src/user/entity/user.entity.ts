@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('User')
+@Entity('app_user')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -17,12 +17,12 @@ export class User {
   @Column({ length: 100, unique: true })
   email: string;
 
-  @Column({ type: 'text' })
-  hashed_password: string;
+  @Column({ name: 'password_hash', type: 'text' })
+  passwordHash: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
-  updated_at: Date;
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
+  updatedAt: Date;
 }

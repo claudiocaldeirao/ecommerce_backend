@@ -17,12 +17,12 @@ export class UserService {
   async create(
     name: string,
     email: string,
-    hashedPassword: string,
+    passwordHash: string,
   ): Promise<User> {
     const user = this.userRepository.create({
       name,
       email,
-      hashed_password: hashedPassword,
+      passwordHash: passwordHash,
     });
     return this.userRepository.save(user);
   }
