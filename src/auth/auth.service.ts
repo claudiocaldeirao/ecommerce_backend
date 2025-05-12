@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { AuthAdapter } from './auth.adapter';
-import { AuthTokenService } from './auth-token.service';
+import { AuthTokenService } from './auth-token/auth-token.service';
 import { UserCredentialsDto } from './dto/user-credentials.dto';
 
 @Injectable()
