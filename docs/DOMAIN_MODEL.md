@@ -4,7 +4,7 @@ This document describes the domain structure and core entities of the E-Commerce
 
 ## 1. Product Catalog
 
-- `Product`:
+- `product`:
   - `id`, `name`, `description`, `price`, `stock`, `category`
 
 ---
@@ -59,8 +59,10 @@ This document describes the domain structure and core entities of the E-Commerce
 
 - `app_user`:
   - `id`, `name`, `email`, `password_hash`, `created_at`, `updated_at`
-- `Role`:
+- `role`:
   - `id`, `name`
+- `user_role`:
+  - `user_id`, `role_id`
 - `jwt_token`:
   - `id`, `email`, `expires_at`, `created_at`, `updated_at`, `revoked`
 

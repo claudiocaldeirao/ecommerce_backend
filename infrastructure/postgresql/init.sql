@@ -102,9 +102,21 @@ CREATE TABLE app_user (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE Role (
+CREATE TABLE role (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50)
+);
+
+CREATE TABLE user_role (
+    user_id UUID NOT NULL,
+    role_id INT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    CONSTRAINT fk_user
+        FOREIGN KEY (user_id) REFERENCES app_user(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_role
+        FOREIGN KEY (role_id) REFERENCES role(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE jwt_token (
@@ -215,12 +227,26 @@ INSERT INTO DeliveryStatus (id) VALUES (1);
 
 -- Auth
 INSERT INTO app_user (id, name, email, password_hash, created_at, updated_at) VALUES
-('550e8400-e29b-41d4-a716-446655440000', 'admin', 'admin@example.com', '$2a$10$7k7XUBYf4prTOmYMYZ8HtOCeFLz7OAt70pU5ltVyyg4qls/pFwDAu', NOW(), NOW()),
-('550e8400-e29b-41d4-a716-446655440001', 'cliente', 'cliente@example.com', '$2a$10$7k7XUBYf4prTOmYMYZ8HtOCeFLz7OAt70pU5ltVyyg4qls/pFwDAu', NOW(), NOW());
+('550e8400-e29b-41d4-a716-446655440000', 'admin', 'admin@example.com', '$2b$10$aMG1tJGuDyvYJQYi/J4CA.zwvfOXz0jIxSI2Oj6nLF1fHsqd2wasy', NOW(), NOW()),
+('550e8400-e29b-41d4-a716-446655440001', 'cliente', 'cliente@example.com', '$2b$10$aMG1tJGuDyvYJQYi/J4CA.zwvfOXz0jIxSI2Oj6nLF1fHsqd2wasy', NOW(), NOW());
 
-INSERT INTO Role (id, name) VALUES
-(1, 'Admin'),
-(2, 'Customer');
+INSERT INTO role (id, name) VALUES
+(1, 'admin'),
+(2, 'manager'),
+(3, 'support'),
+(4, 'fulfillment'),
+(5, 'product_manager'),
+(6, 'marketing'),
+(7, 'content_editor'),
+(8, 'developer'),
+(9, 'analyst'),
+(10, 'customer'),
+(11, 'guest'),
+(12, 'subscriber');
+
+INSERT INTO user_role (user_id, role_id) VALUES 
+('550e8400-e29b-41d4-a716-446655440000', 1),
+('550e8400-e29b-41d4-a716-446655440001', 10);
 
 -- Promo
 INSERT INTO Coupon (id, code, validity) VALUES
