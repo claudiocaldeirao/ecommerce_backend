@@ -33,7 +33,7 @@ CREATE TABLE Preferences (
 );
 
 -- Products
-CREATE TABLE Product (
+CREATE TABLE product (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     description TEXT,
@@ -50,7 +50,7 @@ CREATE TABLE Cart (
 
 CREATE TABLE CartItem (
     id SERIAL PRIMARY KEY,
-    product_id INTEGER REFERENCES Product(id),
+    product_id INTEGER REFERENCES product(id),
     quantity INTEGER
 );
 
@@ -143,7 +143,7 @@ CREATE TABLE OrderDashboard (
 
 CREATE TABLE ProductManagement (
     id SERIAL PRIMARY KEY,
-    product_id INTEGER REFERENCES Product(id)
+    product_id INTEGER REFERENCES product(id)
 );
 
 CREATE TABLE Reports (
@@ -190,7 +190,7 @@ INSERT INTO Preferences (id, customer_id, language) VALUES
 (2, 2, 'en-US');
 
 -- Products
-INSERT INTO Product (id, name, description, price, stock, category) VALUES
+INSERT INTO product (id, name, description, price, stock, category) VALUES
 (1, 'Notebook', 'Notebook i5 8GB', 3500.00, 10, 'Eletrônicos'),
 (2, 'Mouse', 'Mouse sem fio', 120.00, 50, 'Acessórios');
 
