@@ -7,6 +7,7 @@ import { JwtConfig } from '../config/jwt.config';
 import { UserModule } from '../user/user.module';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { AuthAdapter } from './auth.adapter';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { AuthController } from './auth.controller';
       useFactory: JwtConfig,
     }),
   ],
-  providers: [JwtStrategy, AuthService],
+  providers: [JwtStrategy, AuthService, AuthAdapter],
   controllers: [AuthController],
   exports: [JwtModule],
 })

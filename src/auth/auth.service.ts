@@ -1,34 +1,40 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UserService } from '../user/user.service';
-import { User } from '../user/entity/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { ConfigService } from '@nestjs/config';
+import { AuthAdapter } from './auth.adapter';
+import { UserCredentialsDto } from './dto/user-credentials.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly configService: ConfigService,
-    private readonly usersService: UserService,
+    private readonly authAdapter: AuthAdapter,
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<User> {
-    const user = await this.usersService.findByEmail(email);
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<UserCredentialsDto> {
+    const userCredentials =
+      await this.authAdapter.getUserCredentialsByEmail(email);
+
+    if (!userCredentials)
+      throw new UnauthorizedException('Invalid credentials');
 
     const isPasswordValid = await bcrypt.compare(
       password,
-      user.hashed_password,
+      userCredentials.passwordHash,
     );
     if (!isPasswordValid)
       throw new UnauthorizedException('Invalid credentials');
 
-    return user;
+    return userCredentials;
   }
 
-  async login(user: User): Promise<{ access_token: string }> {
+  async login(user: UserCredentialsDto): Promise<{ access_token: string }> {
     const payload = { sub: user.id, email: user.email };
     return {
       access_token: this.jwtService.sign(payload),
@@ -36,21 +42,21 @@ export class AuthService {
   }
 
   async register(data: RegisterDto): Promise<{ access_token: string }> {
-    const userExists = await this.usersService.findByEmail(data.email);
+    const userExists = this.authAdapter.getUserCredentialsByEmail(data.email);
 
     if (userExists) {
       throw new UnauthorizedException('Email already in use');
     }
 
-    const hashedPassword = await bcrypt.hash(
+    const passwordHash = await bcrypt.hash(
       data.password,
       this.configService.get<string>('BCRYPT_SALT_ROUNDS'),
     );
 
-    const newUser = await this.usersService.create(
+    const newUser = await this.authAdapter.registerUser(
       data.name,
       data.email,
-      hashedPassword,
+      passwordHash,
     );
 
     const payload = { sub: newUser.id, email: newUser.email };
