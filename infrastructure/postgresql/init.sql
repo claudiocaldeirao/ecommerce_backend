@@ -112,7 +112,7 @@ CREATE TABLE Permission (
     value VARCHAR(100)
 );
 
-CREATE TABLE JWTToken (
+CREATE TABLE jwt_token (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     token TEXT NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,

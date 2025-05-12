@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('jwttoken')
+@Entity('jwt_token')
 export class AuthToken {
   @PrimaryGeneratedColumn('uuid')
   id: string;
