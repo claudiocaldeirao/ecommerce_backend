@@ -112,8 +112,14 @@ CREATE TABLE Permission (
     value VARCHAR(100)
 );
 
-CREATE TABLE Token (
-    id SERIAL PRIMARY KEY
+CREATE TABLE JWTToken (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    token TEXT NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    expires_at TIMESTAMP NOT NULL,
+    revoked BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT now(),
+    updated_at TIMESTAMP DEFAULT now()
 );
 
 -- Promotions
@@ -224,8 +230,6 @@ INSERT INTO Role (id, name) VALUES
 INSERT INTO Permission (id, value) VALUES
 (1, 'read:products'),
 (2, 'create:orders');
-
-INSERT INTO Token (id) VALUES (1);
 
 -- Promo
 INSERT INTO Coupon (id, code, validity) VALUES

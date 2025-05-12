@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { ConfigService } from '@nestjs/config';
 import { AuthAdapter } from './auth.adapter';
+import { AuthTokenService } from './auth-token.service';
 import { UserCredentialsDto } from './dto/user-credentials.dto';
 
 @Injectable()
@@ -12,6 +13,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly authAdapter: AuthAdapter,
     private readonly jwtService: JwtService,
+    private readonly authTokenService: AuthTokenService,
   ) {}
 
   async validateUser(
@@ -36,13 +38,21 @@ export class AuthService {
 
   async login(user: UserCredentialsDto): Promise<{ access_token: string }> {
     const payload = { sub: user.id, email: user.email };
+    const token = this.jwtService.sign(payload);
+    const decoded = this.jwtService.decode(token) as { exp: number };
+    const expiresAt = new Date(decoded.exp * 1000);
+
+    await this.authTokenService.saveToken(user.email, token, expiresAt);
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: token,
     };
   }
 
   async register(data: RegisterDto): Promise<{ access_token: string }> {
-    const userExists = this.authAdapter.getUserCredentialsByEmail(data.email);
+    const userExists = await this.authAdapter.getUserCredentialsByEmail(
+      data.email,
+    );
 
     if (userExists) {
       throw new UnauthorizedException('Email already in use');

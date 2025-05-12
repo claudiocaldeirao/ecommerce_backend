@@ -8,19 +8,23 @@ import { UserModule } from '../user/user.module';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { AuthAdapter } from './auth.adapter';
+import { AuthTokenService } from './auth-token.service';
+import { AuthToken } from './entity/auth-token.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
     PassportModule,
     ConfigModule,
     UserModule,
+    TypeOrmModule.forFeature([AuthToken]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: JwtConfig,
     }),
   ],
-  providers: [JwtStrategy, AuthService, AuthAdapter],
+  providers: [JwtStrategy, AuthService, AuthAdapter, AuthTokenService],
   controllers: [AuthController],
   exports: [JwtModule],
 })
