@@ -76,6 +76,7 @@ CREATE TABLE cart (
 CREATE TABLE cart_item (
     id SERIAL PRIMARY KEY,
     product_id INTEGER REFERENCES product(id),
+    cart_id INTEGER REFERENCES cart(id),
     quantity INTEGER
 );
 
@@ -177,9 +178,9 @@ INSERT INTO product (id, name, description, price, stock, category) VALUES
 
 -- Shopping Cart
 INSERT INTO cart (id, user_id) VALUES (1, '550e8400-e29b-41d4-a716-446655440001');
-INSERT INTO cart_item (id, product_id, quantity) VALUES
-(1, 1, 1),
-(2, 2, 2);
+INSERT INTO cart_item (id, product_id, cart_id, quantity) VALUES
+(1, 1, 1, 1),
+(2, 2, 1, 2);
 
 -- Orders and Payments
 INSERT INTO order_record (id, user_id, date, status) VALUES

@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { User } from '../../../user/entity/user.entity';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from '@/user/entity/user.entity';
 
 @Entity('cart')
 export class Cart {
@@ -7,5 +7,6 @@ export class Cart {
   id: number;
 
   @ManyToOne(() => User, { nullable: false })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 }

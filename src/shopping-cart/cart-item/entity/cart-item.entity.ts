@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Cart } from '@/shopping-cart/cart/entity/cart.entity';
 import { Product } from '@/product/entity/product.entity';
 
@@ -8,9 +14,11 @@ export class CartItem {
   id: number;
 
   @ManyToOne(() => Product, { nullable: false })
+  @JoinColumn({ name: 'product_id' })
   product: Product;
 
   @ManyToOne(() => Cart, { nullable: false })
+  @JoinColumn({ name: 'cart_id' })
   cart: Cart;
 
   @Column('int')
