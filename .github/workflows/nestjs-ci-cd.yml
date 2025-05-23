@@ -1,0 +1,77 @@
+name: NestJS CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Detect Secrets
+        run: |
+          pip install detect-secrets
+          detect-secrets scan > .secrets.baseline
+
+      - name: Install pnpm
+        run: npm install -g pnpm@9.4
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm run build
+
+      # - name: Mend scan (Snyk / Mend CLI)
+      #   run: |
+      #     curl https://downloads.mend.io/mend-cli/linux_amd64/mend > mend
+      #     chmod +x mend
+      #     ./mend code scan
+
+      - name: Run unit tests
+        run: pnpm run test
+
+      - name: Version bump
+        run: |
+          BRANCH=$(echo "${{ github.ref_name }}")
+          VERSION=$(node scripts/bump-version.js $BRANCH)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Run ESLint
+        run: pnpm run lint
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+      # - name: Build Docker image
+      #   run: docker build -t my-app:${{ env.VERSION }} .
+
+      # - name: Sign Docker image
+      #   run: |
+      #     cosign sign --key ${{ secrets.COSIGN_KEY }} my-app:${{ env.VERSION }}
+
+      # - name: Push Docker image
+      #   run: |
+      #     echo ${{ secrets.REGISTRY_PASSWORD }} | docker login -u ${{ secrets.REGISTRY_USER }} --password-stdin
+      #     docker tag my-app:${{ env.VERSION }} registry.example.com/my-app:${{ env.VERSION }}
+      #     docker push registry.example.com/my-app:${{ env.VERSION }}
+
+      # - name: Deploy
+      #   run: |
+      #     ./scripts/deploy.sh --env ${{ github.ref_name }} --version ${{ env.VERSION }}
+
+      # - name: ZAP Scan (only on test)
+      #   if: github.ref_name == 'test'
+      #   uses: zaproxy/action-baseline@v0.7.0
+      #   with:
+      #     target: 'https://test.example.com'
