@@ -39,7 +39,7 @@ jobs:
       - name: Version bump
         run: |
           BRANCH=$(echo "${{ github.ref_name }}")
-          VERSION=$(node scripts/bump-version.js $BRANCH)
+          VERSION=$(sh scripts/version_bump.sh $BRANCH)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Run ESLint
