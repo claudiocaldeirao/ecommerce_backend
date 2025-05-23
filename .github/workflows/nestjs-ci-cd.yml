@@ -8,15 +8,22 @@ on:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+      security-events: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Run Detect Secrets
         run: |
           pip install detect-secrets
-          detect-secrets scan > .secrets.baseline
+          detect-secrets scan > .secrets.baseline --exclude-files pnpm-lock.yaml
+          detect-secrets audit .secrets.baseline
 
       - name: Install pnpm
         run: npm install -g pnpm@9.4
@@ -27,12 +34,6 @@ jobs:
       - name: Build project
         run: pnpm run build
 
-      # - name: Mend scan (Snyk / Mend CLI)
-      #   run: |
-      #     curl https://downloads.mend.io/mend-cli/linux_amd64/mend > mend
-      #     chmod +x mend
-      #     ./mend code scan
-
       - name: Run unit tests
         run: pnpm run test
 
@@ -42,16 +43,28 @@ jobs:
           VERSION=$(sh scripts/version_bump.sh $BRANCH)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Update version and generate tag
+        env:
+          VERSION: ${{ env.VERSION }}
+        run: |
+          # update package.json version
+          npm version $VERSION --no-git-tag-version
+
+          # Git setup
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          # Commit and push changes
+          git add package.json
+          git commit -m "chore: bump version to $VERSION"
+          git push origin ${{ github.ref }}
+
+          # Create tag
+          git tag -a "v${VERSION}" -m "Release version ${VERSION}"
+          git push origin "v${VERSION}"
+
       - name: Run ESLint
         run: pnpm run lint
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: javascript
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
 
       # - name: Build Docker image
       #   run: docker build -t my-app:${{ env.VERSION }} .
