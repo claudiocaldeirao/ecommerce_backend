@@ -13,9 +13,11 @@ scenarios:
       - post:
           url: '/v1/auth/login'
           json:
-            email: 'Sophie_Borer@hotmail.com'
+            email: 'Jordan.Brown@yahoo.com'
             password: 'senha123'
           capture:
+            - json: '$.user_id'
+              as: userId
             - json: '$.access_token'
               as: token
 
@@ -26,7 +28,7 @@ scenarios:
               as: productId
 
       - get:
-          url: '/v1/cart/user/61f51a23-4ba8-46c8-80fd-96e9d50b0f9f'
+          url: '{{ userId }}'
           headers:
             Authorization: 'Bearer {{ token }}'
           capture:
