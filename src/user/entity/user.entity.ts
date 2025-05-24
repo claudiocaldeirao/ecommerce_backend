@@ -17,7 +17,7 @@ export class User {
   @Column({ length: 100, unique: true })
   email: string;
 
-  @Column({ name: 'password_hash', type: 'text' })
+  @Column({ name: 'password_hash', type: 'text', select: false })
   passwordHash: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })

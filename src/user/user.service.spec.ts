@@ -28,6 +28,11 @@ describe('UserService', () => {
             find: jest.fn(),
             create: jest.fn(),
             save: jest.fn(),
+            createQueryBuilder: jest.fn().mockReturnValue({
+              addSelect: jest.fn().mockReturnThis(),
+              where: jest.fn().mockReturnThis(),
+              getOne: jest.fn(),
+            }),
           },
         },
       ],
@@ -39,24 +44,52 @@ describe('UserService', () => {
 
   describe('findByEmail', () => {
     it('should return a user if found by email', async () => {
-      repository.findOne.mockResolvedValue(mockUser);
+      const mockQueryBuilder = {
+        addSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockResolvedValue(mockUser),
+      };
+
+      repository.createQueryBuilder.mockReturnValue(mockQueryBuilder as any);
 
       const result = await service.findByEmail('john@example.com');
 
-      expect(repository.findOne).toHaveBeenCalledWith({
-        where: { email: 'john@example.com' },
-      });
+      expect(repository.createQueryBuilder).toHaveBeenCalledWith('user');
+      expect(mockQueryBuilder.addSelect).toHaveBeenCalledWith(
+        'user.passwordHash',
+      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        'user.email = :email',
+        {
+          email: 'john@example.com',
+        },
+      );
+      expect(mockQueryBuilder.getOne).toHaveBeenCalled();
       expect(result).toEqual(mockUser);
     });
 
     it('should return null if no user is found', async () => {
-      repository.findOne.mockResolvedValue(null);
+      const mockQueryBuilder = {
+        addSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getOne: jest.fn().mockResolvedValue(null),
+      };
+
+      repository.createQueryBuilder.mockReturnValue(mockQueryBuilder as any);
 
       const result = await service.findByEmail('notfound@example.com');
 
-      expect(repository.findOne).toHaveBeenCalledWith({
-        where: { email: 'notfound@example.com' },
-      });
+      expect(repository.createQueryBuilder).toHaveBeenCalledWith('user');
+      expect(mockQueryBuilder.addSelect).toHaveBeenCalledWith(
+        'user.passwordHash',
+      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        'user.email = :email',
+        {
+          email: 'notfound@example.com',
+        },
+      );
+      expect(mockQueryBuilder.getOne).toHaveBeenCalled();
       expect(result).toBeNull();
     });
   });
