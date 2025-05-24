@@ -123,6 +123,7 @@ describe('AuthService', () => {
       expect(jwtService.sign).toHaveBeenCalledWith({
         sub: user.id,
         email: user.email,
+        jti: expect.any(String),
       });
       expect(jwtService.decode).toHaveBeenCalledWith(fakeToken);
       expect(authTokenService.saveToken).toHaveBeenCalledWith(
@@ -179,6 +180,7 @@ describe('AuthService', () => {
       expect(jwtService.sign).toHaveBeenCalledWith({
         sub: newUser.id,
         email: newUser.email,
+        jti: expect.any(String),
       });
       expect(result).toEqual({ access_token: fakeToken });
     });
