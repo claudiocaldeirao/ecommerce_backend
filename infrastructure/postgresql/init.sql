@@ -1583,3 +1583,32 @@ INSERT INTO order_transaction (id, total_amount, description) VALUES
 (134, 514.29, 'Pedido #134'),
 (135, 403.19, 'Pedido #135'),
 (136, 751.59, 'Pedido #136');
+
+-- Atualizar sequências após inserções manuais
+
+-- user_address.id
+SELECT setval(pg_get_serial_sequence('user_address', 'id'), (SELECT COALESCE(MAX(id), 1) FROM user_address));
+
+-- user_profile.id
+SELECT setval(pg_get_serial_sequence('user_profile', 'id'), (SELECT COALESCE(MAX(id), 1) FROM user_profile));
+
+-- role.id
+SELECT setval(pg_get_serial_sequence('role', 'id'), (SELECT COALESCE(MAX(id), 1) FROM role));
+
+-- product.id
+SELECT setval(pg_get_serial_sequence('product', 'id'), (SELECT COALESCE(MAX(id), 1) FROM product));
+
+-- cart.id
+SELECT setval(pg_get_serial_sequence('cart', 'id'), (SELECT COALESCE(MAX(id), 1) FROM cart));
+
+-- cart_item.id
+SELECT setval(pg_get_serial_sequence('cart_item', 'id'), (SELECT COALESCE(MAX(id), 1) FROM cart_item));
+
+-- order_record.id
+SELECT setval(pg_get_serial_sequence('order_record', 'id'), (SELECT COALESCE(MAX(id), 1) FROM order_record));
+
+-- order_invoice.id
+SELECT setval(pg_get_serial_sequence('order_invoice', 'id'), (SELECT COALESCE(MAX(id), 1) FROM order_invoice));
+
+-- order_transaction.id
+SELECT setval(pg_get_serial_sequence('order_transaction', 'id'), (SELECT COALESCE(MAX(id), 1) FROM order_transaction));
