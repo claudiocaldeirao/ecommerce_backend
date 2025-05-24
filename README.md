@@ -34,6 +34,12 @@ terraform init
 terraform apply
 ```
 
+To reseed database, run the following script before init postgresql:
+
+```bash
+node infrastructure/postgresql/generate_seed.mjs > infrastructure/postgresql/init.sql
+```
+
 This will provision the following infrastructure on AWS:
 
 - **VPC —** Isolated network with subnets, route tables, and internet gateway
@@ -107,7 +113,7 @@ npm run test
 
 This project uses detect-secrets to identify secrets that may have been accidentally committed to the source code (such as API keys, tokens, or passwords).
 
-#### ✅ Setup and Usage
+#### Setup and Usage
 
 **1 -** Install the tool:
 

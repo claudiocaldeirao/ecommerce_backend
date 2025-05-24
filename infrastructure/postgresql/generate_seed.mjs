@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { v4 as uuidv4 } from 'uuid';
 
-// Ajuste a quantidade de registros desejada
 const NUM_USERS = 100;
 const NUM_PRODUCTS = 50;
 const NUM_ORDERS_PER_USER = 3;
@@ -10,7 +9,6 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Gera usuários
 function generateUsers(n) {
   const users = [];
   for (let i = 0; i < n; i++) {
@@ -23,7 +21,7 @@ function generateUsers(n) {
         .toISOString()
         .split('T')[0],
       password_hash:
-        '$2b$10$aMG1tJGuDyvYJQYi/J4CA.zwvfOXz0jIxSI2Oj6nLF1fHsqd2wasy', // Mesma hash de exemplo
+        '$2b$10$aMG1tJGuDyvYJQYi/J4CA.zwvfOXz0jIxSI2Oj6nLF1fHsqd2wasy', // 123
       created_at: new Date(),
       updated_at: new Date(),
     });
@@ -31,7 +29,6 @@ function generateUsers(n) {
   return users;
 }
 
-// Gera endereços dos usuários
 function generateAddresses(users) {
   return users.map((u, i) => ({
     id: i + 1,
@@ -41,7 +38,6 @@ function generateAddresses(users) {
   }));
 }
 
-// Gera perfis dos usuários
 function generateProfiles(users) {
   return users.map((u, i) => ({
     id: i + 1,
@@ -50,7 +46,6 @@ function generateProfiles(users) {
   }));
 }
 
-// Gera papéis fixos (roles)
 function generateRoles() {
   const roles = [
     'admin',
@@ -69,7 +64,6 @@ function generateRoles() {
   return roles.map((name, i) => ({ id: i + 1, name }));
 }
 
-// Atribui papéis aleatórios para usuários
 function generateUserRoles(users, roles) {
   return users.map((u) => ({
     user_id: u.id,
@@ -77,7 +71,6 @@ function generateUserRoles(users, roles) {
   }));
 }
 
-// Gera produtos
 function generateProducts(n) {
   const categories = [
     'Eletrônicos',
@@ -100,7 +93,6 @@ function generateProducts(n) {
   return products;
 }
 
-// Gera carrinhos e itens para usuários clientes
 function generateCarts(users, products) {
   const carts = [];
   const cartItems = [];
@@ -130,7 +122,6 @@ function generateCarts(users, products) {
   return { carts, cartItems };
 }
 
-// Gera pedidos, faturas e transações para usuários
 function generateOrders(users) {
   const orders = [];
   const invoices = [];
@@ -172,60 +163,6 @@ function generateOrders(users) {
   return { orders, invoices, transactions };
 }
 
-// Gera entregas, tracking, carrier e delivery status
-function generateDeliveries(orders) {
-  const deliveries = [];
-  const trackings = [];
-  const carriers = [{ id: 1, name: 'Correios' }];
-  const deliveryStatus = [{ id: 1 }, { id: 2 }, { id: 3 }]; // Exemplo de status
-
-  let deliveryId = 1;
-
-  orders.forEach((order) => {
-    deliveries.push({
-      id: deliveryId,
-      order_record_id: order.id,
-    });
-    trackings.push({
-      code: `TRACK${faker.number.int({ min: 1000, max: 9999 })}`,
-    });
-    deliveryId++;
-  });
-
-  return { deliveries, trackings, carriers, deliveryStatus };
-}
-
-// Gera suporte (return_request, support_ticket, feedback)
-function generateSupport(users) {
-  const returnRequests = [];
-  const supportTickets = [];
-  const feedbacks = [];
-
-  let supportId = 1;
-
-  users.forEach((user) => {
-    if (faker.datatype.boolean()) {
-      returnRequests.push({
-        id: supportId,
-        user_id: user.id,
-      });
-      supportTickets.push({
-        id: supportId,
-        user_id: user.id,
-        description: faker.lorem.sentence(),
-      });
-      feedbacks.push({
-        id: supportId,
-        user_id: user.id,
-      });
-      supportId++;
-    }
-  });
-
-  return { returnRequests, supportTickets, feedbacks };
-}
-
-// Função para montar comandos SQL de INSERT
 function buildInsert(table, columns, data) {
   const values = data.map((row) => {
     const vals = columns.map((col) => {
@@ -250,9 +187,6 @@ function main() {
   const products = generateProducts(NUM_PRODUCTS);
   const { carts, cartItems } = generateCarts(users, products);
   const { orders, invoices, transactions } = generateOrders(users);
-  const { deliveries, trackings, carriers, deliveryStatus } =
-    generateDeliveries(orders);
-  const { returnRequests, supportTickets, feedbacks } = generateSupport(users);
 
   let sqlScript = `-- ===========================
 -- Schema creation
@@ -355,42 +289,6 @@ CREATE TABLE order_transaction (
     description TEXT
 );
 
--- Shipping and Logistics
-CREATE TABLE delivery (
-    id SERIAL PRIMARY KEY,
-    order_record_id INTEGER REFERENCES order_record(id)
-);
-
-CREATE TABLE tracking (
-    code VARCHAR(50) PRIMARY KEY
-);
-
-CREATE TABLE carrier (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100)
-);
-
-CREATE TABLE delivery_status (
-    id SERIAL PRIMARY KEY
-);
-
--- Support
-CREATE TABLE return_request (
-    id SERIAL PRIMARY KEY,
-    user_id UUID REFERENCES user_account(id)
-);
-
-CREATE TABLE support_ticket (
-    id SERIAL PRIMARY KEY,
-    user_id UUID REFERENCES user_account(id),
-    description TEXT
-);
-
-CREATE TABLE feedback (
-    id SERIAL PRIMARY KEY,
-    user_id UUID REFERENCES user_account(id)
-);
-
 -- ===========================
 -- Seed data
 -- ===========================
@@ -447,17 +345,6 @@ CREATE TABLE feedback (
     ['id', 'total_amount', 'description'],
     transactions,
   );
-  sqlScript += buildInsert('delivery', ['id', 'order_record_id'], deliveries);
-  sqlScript += buildInsert('tracking', ['code'], trackings);
-  sqlScript += buildInsert('carrier', ['id', 'name'], carriers);
-  sqlScript += buildInsert('delivery_status', ['id'], deliveryStatus);
-  sqlScript += buildInsert('return_request', ['id', 'user_id'], returnRequests);
-  sqlScript += buildInsert(
-    'support_ticket',
-    ['id', 'user_id', 'description'],
-    supportTickets,
-  );
-  sqlScript += buildInsert('feedback', ['id', 'user_id'], feedbacks);
 
   console.log(sqlScript);
 }
