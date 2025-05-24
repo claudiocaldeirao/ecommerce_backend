@@ -96,4 +96,36 @@ describe('ProductService', () => {
       expect(result).toEqual(updatedProduct);
     });
   });
+
+  describe('validateStock', () => {
+    it('should pass if all items have sufficient stock', async () => {
+      const cartItems = [
+        { productId: 1, quantity: 2 },
+        { productId: 2, quantity: 1 },
+      ];
+
+      const product1 = { id: 1, stock: 5 } as Product;
+      const product2 = { id: 2, stock: 3 } as Product;
+
+      jest
+        .spyOn(service, 'findOne')
+        .mockResolvedValueOnce(product1)
+        .mockResolvedValueOnce(product2);
+
+      await expect(service.validateStock(cartItems)).resolves.not.toThrow();
+      expect(service.findOne).toHaveBeenCalledTimes(2);
+    });
+
+    it('should throw an error if any item has insufficient stock', async () => {
+      const cartItems = [{ productId: 1, quantity: 10 }];
+      const product = { id: 1, stock: 5 } as Product;
+
+      jest.spyOn(service, 'findOne').mockResolvedValue(product);
+
+      await expect(service.validateStock(cartItems)).rejects.toThrow(
+        'Insufficient stock for product ID 1',
+      );
+      expect(service.findOne).toHaveBeenCalledWith(1);
+    });
+  });
 });
