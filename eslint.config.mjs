@@ -18,12 +18,6 @@ export default [
     plugins: {
       '@typescript-eslint': tseslint.plugin,
     },
-    rules: {
-      '@typescript-eslint/interface-name-prefix': 'off',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
   },
   {
     linterOptions: {
@@ -32,6 +26,15 @@ export default [
     settings: {},
   },
   ...tseslint.configs.recommended,
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    rules: {
+      '@typescript-eslint/interface-name-prefix': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
   {
     plugins: {
       prettier: eslintPrettierPlugin,
