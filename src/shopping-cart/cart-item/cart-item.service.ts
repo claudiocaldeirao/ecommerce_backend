@@ -16,9 +16,19 @@ export class CartItemService {
     private readonly productRepo: Repository<Product>,
   ) {}
 
-  async addItem(cartId: number, productId: number, quantity: number) {
+  async upsertItem(cartId: number, productId: number, quantity: number) {
     const cart = await this.cartRepo.findOneBy({ id: cartId });
     const product = await this.productRepo.findOneBy({ id: productId });
+
+    const existingItem = await this.cartItemRepo.findOne({
+      where: { cart: cart, product: product },
+    });
+
+    if (existingItem) {
+      existingItem.quantity = quantity;
+      return this.cartItemRepo.save(existingItem);
+    }
+
     const item = this.cartItemRepo.create({ cart, product, quantity });
     return this.cartItemRepo.save(item);
   }

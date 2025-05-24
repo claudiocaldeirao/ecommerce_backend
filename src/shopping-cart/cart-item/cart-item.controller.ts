@@ -14,12 +14,12 @@ export class CartItemController {
   constructor(private readonly cartItemService: CartItemService) {}
 
   @Post(':cartId/product/:productId')
-  addItem(
+  upsertItem(
     @Param('cartId') cartId: number,
     @Param('productId') productId: number,
     @Body('quantity') quantity: number,
   ) {
-    return this.cartItemService.addItem(cartId, productId, quantity);
+    return this.cartItemService.upsertItem(cartId, productId, quantity);
   }
 
   @Patch(':itemId')
