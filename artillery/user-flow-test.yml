@@ -1,0 +1,41 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 60
+      arrivalRate: 5
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+
+scenarios:
+  - name: 'Login, search products and add to cart'
+    flow:
+      - post:
+          url: '/v1/auth/login'
+          json:
+            email: 'Sophie_Borer@hotmail.com'
+            password: 'senha123'
+          capture:
+            - json: '$.access_token'
+              as: token
+
+      - get:
+          url: '/v1/products'
+          capture:
+            - json: '$[0].id'
+              as: productId
+
+      - get:
+          url: '/v1/cart/user/61f51a23-4ba8-46c8-80fd-96e9d50b0f9f'
+          headers:
+            Authorization: 'Bearer {{ token }}'
+          capture:
+            - json: '$.id'
+              as: cartId
+
+      - post:
+          url: '/v1/cart-item/{{ cartId }}/product/{{ productId }}'
+          headers:
+            Authorization: 'Bearer {{ token }}'
+          json:
+            quantity: 3
