@@ -10,6 +10,11 @@ config:
     - name: 'Heavy Traffic'
       duration: 20
       arrivalRate: 30
+  payload:
+    path: 'users.csv'
+    fields:
+      - email
+    order: sequence
   defaults:
     headers:
       Content-Type: 'application/json'
@@ -20,7 +25,7 @@ scenarios:
       - post:
           url: '/v1/auth/login'
           json:
-            email: 'Jordan.Brown@yahoo.com'
+            email: '{{email}}'
             password: '123'
           capture:
             - json: '$.user_id'
