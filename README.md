@@ -81,6 +81,22 @@ The system follows a Domain-Driven Design (DDD) approach.
 
 👉 See the full [Domain Model](docs/DOMAIN_MODEL.md)
 
+### 📄 Functional Scope
+
+This project aims to demonstrate the architecture and core functionalities of an e-commerce API. Due to the inherent complexity of a complete e-commerce platform and the project's educational purpose, the implementation scope is intentionally limited.
+
+The current version of the API covers only the initial stages of the purchase flow, focusing on the following areas:
+
+    Product Selection and Cart Management
+
+    Checkout Process
+
+    Payment Processing, with integration of a payment gateway (Stripe) as the final step.
+
+More advanced modules such as invoice generation, logistics handling, shipment tracking, and post-sale support are described in the [Functional Requirements Document](docs/FUNCTIONAL_REQUIREMENTS.md), but are not part of this implementation.
+
+This deliberate scoping allows for a focused demonstration of backend architecture, clean code practices, and integration with a real-world payment processor, while keeping the project manageable and meaningful for learning and showcasing purposes.
+
 ### ✅ Running Tests
 
 ```js
