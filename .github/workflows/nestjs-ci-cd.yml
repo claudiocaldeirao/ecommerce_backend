@@ -22,7 +22,7 @@ jobs:
       - name: Run Detect Secrets
         run: |
           pip install detect-secrets
-          detect-secrets scan > .secrets.baseline --exclude-files pnpm-lock.yaml
+          detect-secrets scan --baseline .secrets.baseline
           detect-secrets audit .secrets.baseline
 
       - name: Install pnpm
