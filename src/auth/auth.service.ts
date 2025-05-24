@@ -36,7 +36,9 @@ export class AuthService {
     return userCredentials;
   }
 
-  async login(user: UserCredentialsDto): Promise<{ access_token: string }> {
+  async login(
+    user: UserCredentialsDto,
+  ): Promise<{ access_token: string; user_id: string }> {
     const payload = { sub: user.id, email: user.email };
     const token = this.jwtService.sign(payload);
     const decoded = this.jwtService.decode(token) as { exp: number };
@@ -45,6 +47,7 @@ export class AuthService {
     await this.authTokenService.saveToken(user.id, token, expiresAt);
 
     return {
+      user_id: user.id,
       access_token: token,
     };
   }
