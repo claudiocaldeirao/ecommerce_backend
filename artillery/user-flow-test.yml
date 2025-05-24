@@ -1,20 +1,27 @@
 config:
   target: 'http://localhost:3000'
   phases:
-    - duration: 60
+    - name: 'Light Traffic'
+      duration: 20
       arrivalRate: 5
+    - name: 'Medium Traffic'
+      duration: 20
+      arrivalRate: 15
+    - name: 'Heavy Traffic'
+      duration: 20
+      arrivalRate: 30
   defaults:
     headers:
       Content-Type: 'application/json'
 
 scenarios:
-  - name: 'Login, search products and add to cart'
+  - name: 'Use case 01: Search products and add to cart'
     flow:
       - post:
           url: '/v1/auth/login'
           json:
             email: 'Jordan.Brown@yahoo.com'
-            password: 'senha123'
+            password: '123'
           capture:
             - json: '$.user_id'
               as: userId
@@ -28,7 +35,7 @@ scenarios:
               as: productId
 
       - get:
-          url: '{{ userId }}'
+          url: '/v1/cart/user/{{ userId }}'
           headers:
             Authorization: 'Bearer {{ token }}'
           capture:
