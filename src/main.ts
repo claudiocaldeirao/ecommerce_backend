@@ -1,3 +1,4 @@
+import { setupGracefulShutdown } from 'nestjs-graceful-shutdown';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { VersioningType } from '@nestjs/common';
@@ -31,6 +32,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
+  setupGracefulShutdown({ app });
   app.useGlobalFilters(new ExceptionsFilter());
   await app.listen(process.env.API_PORT || 3000);
 }
