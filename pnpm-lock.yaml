@@ -71,6 +71,9 @@ importers:
       typeorm:
         specifier: ^0.3.23
         version: 0.3.24(pg@8.16.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@20.17.50)(typescript@5.8.3))
+      uuid:
+        specifier: ^11.1.0
+        version: 11.1.0
     devDependencies:
       '@commitlint/cli':
         specifier: ^19.8.1
@@ -153,9 +156,6 @@ importers:
       typescript-eslint:
         specifier: ^8.32.1
         version: 8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3)
-      uuid:
-        specifier: ^11.1.0
-        version: 11.1.0
 
 packages:
 
