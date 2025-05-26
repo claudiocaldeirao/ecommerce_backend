@@ -24,6 +24,7 @@ lerna-debug.log*
 terraform.tfstate
 terraform.tfstate.backup
 terraform_accessKeys.csv
+terraform/terraform.tfvars
 
 # IDEs and editors
 /.idea

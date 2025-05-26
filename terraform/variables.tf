@@ -1,23 +1,19 @@
 variable "region" {
-  default = "us-east-1"
-}
-
-variable "aws_access_key" {
-  default = "aws_access_key"
-}
-
-variable "aws_secret_key" {
-  default = "aws_secret_key"
+  type        = string
+  description = "The AWS region to deploy resources in"
 }
 
 variable "db_username" {
-  default = "devuser"
+  type        = string
+  description = "The username for the PostgreSQL database"
 }
 
 variable "db_password" {
-  default = "devpassword"
+  type        = string
+  description = "The password for the PostgreSQL database"
 }
 
 variable "db_name" {
-  default = "development"
+  type        = string
+  description = "The name of the PostgreSQL database"
 }
