@@ -12,7 +12,7 @@ terraform {
 provider "aws" {
   region = var.region
 }
-
+# ------------------------------------- Database Resources -----------------------------------
 resource "aws_db_instance" "ecommerce_postgresql" {
   allocated_storage    = 20
   db_name              = "ecommercedb"
@@ -27,4 +27,50 @@ resource "aws_db_instance" "ecommerce_postgresql" {
   tags = {
     Name = "ecommerce_postgresql"
   }
+}
+# ------------------------------- VPC and Networking Resources -------------------------------
+resource "aws_vpc" "ecommerce_vpc" {
+  cidr_block = "10.0.0.0/16"
+  tags = {
+    Name = "ecommerce_vpc"
+  }
+}
+
+resource "aws_subnet" "ecommerce_public_subnet" {
+  vpc_id     = aws_vpc.ecommerce_vpc.id
+  cidr_block = "10.0.1.0/24"
+  tags = {
+    Name = "ecommerce_public_subnet"
+  }
+}
+
+resource "aws_subnet" "ecommerce_private_subnet" {
+  vpc_id     = aws_vpc.ecommerce_vpc.id
+  cidr_block = "10.0.2.0/24"
+  tags = {
+    Name = "ecommerce_private_subnet"
+  }
+}
+
+resource "aws_internet_gateway" "ecommerce_igw" {
+  vpc_id = aws_vpc.ecommerce_vpc.id
+  tags = {
+    Name = "ecommerce_igw"
+  }
+}
+
+resource "aws_route_table" "ecommerce_public_route_table" {
+  vpc_id = aws_vpc.ecommerce_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.ecommerce_igw.id
+  }
+  tags = {
+    Name = "ecommerce_public_route_table"
+  }
+}
+
+resource "aws_route_table_association" "ecommerce_public_subnet_association" {
+  subnet_id      = aws_subnet.ecommerce_public_subnet.id
+  route_table_id = aws_route_table.ecommerce_public_route_table.id
 }
