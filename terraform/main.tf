@@ -24,6 +24,7 @@ resource "aws_db_instance" "ecommerce_postgresql" {
   parameter_group_name = "default.postgres17"
   skip_final_snapshot  = true
   publicly_accessible  = false
+  db_subnet_group_name = aws_db_subnet_group.ecommerce_private_subnet_group.name
   tags = {
     Name = "ecommerce_postgresql"
   }
@@ -44,13 +45,24 @@ resource "aws_subnet" "ecommerce_public_subnet" {
   }
 }
 
-resource "aws_subnet" "ecommerce_private_subnet" {
-  vpc_id     = aws_vpc.ecommerce_vpc.id
-  cidr_block = "10.0.2.0/24"
+resource "aws_subnet" "ecommerce_private_subnet_01a" {
+  vpc_id            = aws_vpc.ecommerce_vpc.id
+  cidr_block        = "10.0.2.0/24"
+  availability_zone = "us-east-1a"
   tags = {
-    Name = "ecommerce_private_subnet"
+    Name = "ecommerce_private_subnet_1a"
   }
 }
+
+resource "aws_subnet" "ecommerce_private_subnet_01b" {
+  vpc_id            = aws_vpc.ecommerce_vpc.id
+  cidr_block        = "10.0.3.0/24"
+  availability_zone = "us-east-1b"
+  tags = {
+    Name = "ecommerce_private_subnet_1b"
+  }
+}
+
 
 resource "aws_internet_gateway" "ecommerce_igw" {
   vpc_id = aws_vpc.ecommerce_vpc.id
@@ -73,4 +85,13 @@ resource "aws_route_table" "ecommerce_public_route_table" {
 resource "aws_route_table_association" "ecommerce_public_subnet_association" {
   subnet_id      = aws_subnet.ecommerce_public_subnet.id
   route_table_id = aws_route_table.ecommerce_public_route_table.id
+}
+
+resource "aws_db_subnet_group" "ecommerce_private_subnet_group" {
+  name       = "ecommerce_private_subnet_group"
+  subnet_ids = [aws_subnet.ecommerce_private_subnet_01a.id, aws_subnet.ecommerce_private_subnet_01b.id]
+
+  tags = {
+    Name = "ecommerce_db_subnet_group"
+  }
 }
