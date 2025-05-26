@@ -30,6 +30,39 @@ resource "aws_db_instance" "ecommerce_postgresql" {
     "aws:application" = "ecommerce_showcase"
   }
 }
+# ------------------------------------- Instance Resources -----------------------------------
+resource "aws_s3_bucket" "ecommerce_app_code" {
+  bucket        = "ecommerce-app-code-${random_id.suffix.hex}"
+  force_destroy = true
+
+  tags = {
+    Name              = "ecommerce_app_code"
+    "aws:application" = "ecommerce_showcase"
+    Environment       = "dev"
+  }
+}
+
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = aws_s3_bucket.ecommerce_app_code.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "block_public" {
+  bucket = aws_s3_bucket.ecommerce_app_code.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 # ------------------------------- VPC and Networking Resources -------------------------------
 resource "aws_vpc" "ecommerce_vpc" {
   cidr_block = "10.0.0.0/16"
