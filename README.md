@@ -66,18 +66,20 @@ Create a .env file in the project root following this [schema](src/config/valida
 src/
 │
 ├── modules/
-│   ├── product-catalog/
-│   ├── shopping-cart/
-│   ├── orders/
-│   ├── customers/
+│   ├── product/            # implemented
+│   ├── shopping-cart/      # implemented
+│   │    ├── cart           # implemented
+│   │    └── cart-item      # implemented
+│   ├── order/
+│   ├── user/               # implemented
 │   ├── shipping/
-│   ├── auth/
-│   ├── promotions/
+│   ├── auth/               # implemented
+│   ├── promotion/
 │   ├── support/
 │   └── admin/
 │
 ├── config/
-├── shared/
+├── common/
 └── main.ts
 ```
 
