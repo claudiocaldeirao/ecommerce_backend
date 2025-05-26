@@ -37,7 +37,7 @@ terraform apply
 To reseed database, run the following script before init postgresql:
 
 ```bash
-node infrastructure/postgresql/generate_seed.mjs > infrastructure/postgresql/init.sql
+node dev/postgresql/generate_seed.mjs > dev/postgresql/init.sql
 ```
 
 This will provision the following infrastructure on AWS:
