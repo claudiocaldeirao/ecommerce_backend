@@ -26,14 +26,16 @@ resource "aws_db_instance" "ecommerce_postgresql" {
   publicly_accessible  = false
   db_subnet_group_name = aws_db_subnet_group.ecommerce_private_subnet_group.name
   tags = {
-    Name = "ecommerce_postgresql"
+    Name              = "ecommerce_postgresql"
+    "aws:application" = "ecommerce_showcase"
   }
 }
 # ------------------------------- VPC and Networking Resources -------------------------------
 resource "aws_vpc" "ecommerce_vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
-    Name = "ecommerce_vpc"
+    Name              = "ecommerce_vpc"
+    "aws:application" = "ecommerce_showcase"
   }
 }
 
@@ -41,7 +43,8 @@ resource "aws_subnet" "ecommerce_public_subnet" {
   vpc_id     = aws_vpc.ecommerce_vpc.id
   cidr_block = "10.0.1.0/24"
   tags = {
-    Name = "ecommerce_public_subnet"
+    Name              = "ecommerce_public_subnet"
+    "aws:application" = "ecommerce_showcase"
   }
 }
 
@@ -50,7 +53,8 @@ resource "aws_subnet" "ecommerce_private_subnet_01a" {
   cidr_block        = "10.0.2.0/24"
   availability_zone = "us-east-1a"
   tags = {
-    Name = "ecommerce_private_subnet_1a"
+    Name              = "ecommerce_private_subnet_1a"
+    "aws:application" = "ecommerce_showcase"
   }
 }
 
@@ -59,7 +63,8 @@ resource "aws_subnet" "ecommerce_private_subnet_01b" {
   cidr_block        = "10.0.3.0/24"
   availability_zone = "us-east-1b"
   tags = {
-    Name = "ecommerce_private_subnet_1b"
+    Name              = "ecommerce_private_subnet_1b"
+    "aws:application" = "ecommerce_showcase"
   }
 }
 
@@ -67,7 +72,8 @@ resource "aws_subnet" "ecommerce_private_subnet_01b" {
 resource "aws_internet_gateway" "ecommerce_igw" {
   vpc_id = aws_vpc.ecommerce_vpc.id
   tags = {
-    Name = "ecommerce_igw"
+    Name              = "ecommerce_igw"
+    "aws:application" = "ecommerce_showcase"
   }
 }
 
@@ -78,7 +84,8 @@ resource "aws_route_table" "ecommerce_public_route_table" {
     gateway_id = aws_internet_gateway.ecommerce_igw.id
   }
   tags = {
-    Name = "ecommerce_public_route_table"
+    Name              = "ecommerce_public_route_table"
+    "aws:application" = "ecommerce_showcase"
   }
 }
 
@@ -90,8 +97,8 @@ resource "aws_route_table_association" "ecommerce_public_subnet_association" {
 resource "aws_db_subnet_group" "ecommerce_private_subnet_group" {
   name       = "ecommerce_private_subnet_group"
   subnet_ids = [aws_subnet.ecommerce_private_subnet_01a.id, aws_subnet.ecommerce_private_subnet_01b.id]
-
   tags = {
-    Name = "ecommerce_db_subnet_group"
+    Name              = "ecommerce_db_subnet_group"
+    "aws:application" = "ecommerce_showcase"
   }
 }
