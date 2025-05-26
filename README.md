@@ -26,10 +26,10 @@ This project is a backend API for an e-commerce platform built with [NestJS](htt
 
 ### 1. Provision Infrastructure with Terraform
 
-Navigate to the `infrastructure/` directory:
+Navigate to the `terraform/` directory:
 
 ```bash
-cd infrastructure/
+cd terraform/
 terraform init
 terraform apply
 ```

@@ -19,6 +19,12 @@ lerna-debug.log*
 /coverage
 /.nyc_output
 
+# terraform
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+terraform_accessKeys.csv
+
 # IDEs and editors
 /.idea
 .project
@@ -38,6 +44,7 @@ lerna-debug.log*
 # dotenv environment variable files
 .env
 .docker.env
+.terraform.env
 .env.development.local
 .env.test.local
 .env.production.local
