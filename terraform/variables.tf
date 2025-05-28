@@ -17,3 +17,12 @@ variable "db_name" {
   type        = string
   description = "The name of the PostgreSQL database"
 }
+
+variable "db_port" {
+  type    = number
+  default = 5432
+}
+
+variable "ec2_user" {}
+
+variable "ec2_password" {}

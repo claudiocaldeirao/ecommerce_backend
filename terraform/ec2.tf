@@ -10,6 +10,9 @@ resource "aws_instance" "ecommerce_app_instance" {
   subnet_id     = aws_subnet.this["pub_a"].id
   user_data     = <<-EOF
     #!/bin/bash
+
+    echo "${var.ec2_user}:${var.ec2_password}" | chpasswd
+
     # Update package list
     apt-get update -y
 
@@ -26,6 +29,17 @@ resource "aws_instance" "ecommerce_app_instance" {
 
     # Extract the contents
     tar -xzf app.tar.gz
+
+    # install psql and seed db
+    apt install -y postgresql-client
+    PGPASSWORD="${var.db_password} psql -h ${aws_db_instance.ecommerce_postgresql.endpoint} -U ${var.db_username} -d ${var.db_name} -f init.sql
+
+    # set environment variables
+    export POSTGRES_USER=${var.db_username}
+    export POSTGRES_PASSWORD=${var.db_password}
+    export POSTGRES_DB=${var.db_name}
+    export POSTGRES_HOST=${aws_db_instance.ecommerce_postgresql.endpoint}
+    export POSTGRES_PORT=${var.db_port}
 
     # Install only production dependencies (optional if already bundled)
     npm install pnpm
