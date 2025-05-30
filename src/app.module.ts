@@ -18,20 +18,24 @@ import { DataSource } from 'typeorm';
       validationSchema,
     }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
-    GracefulShutdownModule.forRoot({
-      cleanup: async (app, signal) => {
-        Logger.warn(`[Graceful Shutdown] signal: ${signal}`);
+    ...(process.env.NODE_ENV !== 'test'
+      ? [
+          GracefulShutdownModule.forRoot({
+            cleanup: async (app, signal) => {
+              Logger.warn(`[Graceful Shutdown] signal: ${signal}`);
 
-        const dataSource = app.get<DataSource>(getDataSourceToken());
+              const dataSource = app.get<DataSource>(getDataSourceToken());
 
-        if (dataSource.isInitialized) {
-          Logger.warn('[Graceful Shutdown] Closing DB connection...');
-          await dataSource.destroy();
-          Logger.warn('[Graceful Shutdown] DB connection closed.');
-        }
-        process.exit(0);
-      },
-    }),
+              if (dataSource.isInitialized) {
+                Logger.warn('[Graceful Shutdown] Closing DB connection...');
+                await dataSource.destroy();
+                Logger.warn('[Graceful Shutdown] DB connection closed.');
+              }
+              process.exit(0);
+            },
+          }),
+        ]
+      : []),
     AuthModule,
     HealthModule,
     ProductModule,
