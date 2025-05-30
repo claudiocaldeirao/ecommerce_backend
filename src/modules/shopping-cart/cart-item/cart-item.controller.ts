@@ -8,8 +8,8 @@ import {
   Get,
   UseGuards,
 } from '@nestjs/common';
-import { CartItemService } from '@/shopping-cart/cart-item/cart-item.service';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
+import { CartItemService } from '../cart-item/cart-item.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('cart-item')

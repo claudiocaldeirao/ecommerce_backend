@@ -5,8 +5,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Cart } from '@/shopping-cart/cart/entity/cart.entity';
-import { Product } from '@/product/entity/product.entity';
+import { Product } from '@/modules/product/entity/product.entity';
+import { Cart } from '../../cart/entity/cart.entity';
 
 @Entity('cart_item')
 export class CartItem {

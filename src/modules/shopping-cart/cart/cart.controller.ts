@@ -6,8 +6,8 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { CartService } from '@/shopping-cart/cart/cart.service';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
+import { CartService } from '../cart/cart.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('cart')

@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CartItemService } from './cart-item.service';
 import { CartItem } from './entity/cart-item.entity';
-import { Cart } from '@/shopping-cart/cart/entity/cart.entity';
-import { Product } from '@/product/entity/product.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '@/user/entity/user.entity';
+import { User } from '@/modules/user/entity/user.entity';
+import { Product } from '@/modules/product/entity/product.entity';
+import { Cart } from '../cart/entity/cart.entity';
 
 describe('CartItemService', () => {
   let service: CartItemService;

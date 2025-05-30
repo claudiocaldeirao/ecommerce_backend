@@ -3,11 +3,11 @@ import { getDataSourceToken, TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { typeOrmConfig } from './config/typeorm.config';
 import { validationSchema } from './config/validation.schema';
-import { HealthModule } from './health/health.module';
-import { ProductModule } from './product/product.module';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
+import { HealthModule } from '@/modules/health/health.module';
+import { ProductModule } from '@/modules/product/product.module';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { UserModule } from '@/modules/user/user.module';
+import { ShoppingCartModule } from '@/modules/shopping-cart/shopping-cart.module';
 import { GracefulShutdownModule } from 'nestjs-graceful-shutdown';
 import { DataSource } from 'typeorm';
 
