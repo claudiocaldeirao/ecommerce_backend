@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '@/app.module';
 import { Product } from '@/modules/product/entity/product.entity';
+import { orderStatus } from '@/modules/order/constants/order-status.constant';
 
 describe('E-commerce API E2E', () => {
   let app: INestApplication;
@@ -84,7 +85,7 @@ describe('E-commerce API E2E', () => {
       .expect(201);
 
     expect(res.body).toHaveProperty('id');
-    expect(res.body).toHaveProperty('status', 'processing');
+    expect(res.body).toHaveProperty('status', orderStatus.PROCESSING);
     expect(res.body).toHaveProperty('transaction');
     expect(res.body.transaction).toHaveProperty('total_amount');
 

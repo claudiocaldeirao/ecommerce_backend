@@ -1,3 +1,5 @@
+import { OrderStatus } from '../constants/order-status.constant';
+
 export class UpdateOrderDto {
-  status?: 'processing' | 'delivered' | 'shipped' | 'cancelled';
+  status?: OrderStatus;
 }

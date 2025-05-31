@@ -9,6 +9,7 @@ import {
 import { OrderInvoice } from './order-invoice.entity';
 import { OrderTransaction } from './order-transaction.entity';
 import { OrderItem } from './order-item.entity';
+import { orderStatus, OrderStatus } from '../constants/order-status.constant';
 
 @Entity('order_record')
 export class OrderRecord {
@@ -21,8 +22,8 @@ export class OrderRecord {
   @CreateDateColumn()
   date: Date;
 
-  @Column({ default: 'processing' })
-  status: 'processing' | 'delivered' | 'shipped' | 'cancelled';
+  @Column({ default: orderStatus.PROCESSING })
+  status: OrderStatus;
 
   @OneToOne(() => OrderInvoice, (invoice) => invoice.order)
   invoice: OrderInvoice;

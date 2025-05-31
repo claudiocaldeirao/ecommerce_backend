@@ -14,6 +14,7 @@ import { Cart } from '../shopping-cart/cart/entity/cart.entity';
 import { CartItem } from '../shopping-cart/cart-item/entity/cart-item.entity';
 import { OrderItem } from './entity/order-item.entity';
 import { calculateTotalAmount } from './order.utils';
+import { orderStatus } from './constants/order-status.constant';
 
 @Injectable()
 export class OrderService {
@@ -90,7 +91,7 @@ export class OrderService {
 
     const order = this.orderRepo.create({
       user_id: userId,
-      status: 'processing',
+      status: orderStatus.PROCESSING,
     });
 
     const savedOrder = await this.orderRepo.save(order);

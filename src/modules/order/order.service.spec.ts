@@ -8,6 +8,7 @@ import { OrderTransaction } from './entity/order-transaction.entity';
 import { OrderInvoice } from './entity/order-invoice.entity';
 import { Cart } from '../shopping-cart/cart/entity/cart.entity';
 import { CartItem } from '../shopping-cart/cart-item/entity/cart-item.entity';
+import { orderStatus } from './constants/order-status.constant';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -105,7 +106,7 @@ describe('OrderService', () => {
       const savedOrder = {
         id: 'order-id',
         user_id: userId,
-        status: 'processing',
+        status: orderStatus.PROCESSING,
       };
       const savedOrderWithRelations = {
         ...savedOrder,
@@ -131,7 +132,7 @@ describe('OrderService', () => {
       expect(result).toEqual(savedOrderWithRelations);
       expect(mockOrderRepo.create).toHaveBeenCalledWith({
         user_id: userId,
-        status: 'processing',
+        status: orderStatus.PROCESSING,
       });
       expect(mockOrderRepo.save).toHaveBeenCalledWith(savedOrder);
       expect(mockOrderItemRepo.create).toHaveBeenCalledTimes(cartItems.length);
@@ -180,16 +181,18 @@ describe('OrderService', () => {
         id: '1',
         user_id: '123456',
         date: undefined,
-        status: 'processing',
+        status: orderStatus.PROCESSING,
         invoice: new OrderInvoice(),
         transaction: new OrderTransaction(),
         items: [],
       };
       jest.spyOn(service, 'findOne').mockResolvedValue(updatedOrder);
 
-      const result = await service.update('1', { status: 'delivered' });
+      const result = await service.update('1', {
+        status: orderStatus.DELIVERED,
+      });
       expect(mockOrderRepo.update).toHaveBeenCalledWith('1', {
-        status: 'delivered',
+        status: orderStatus.DELIVERED,
       });
       expect(result).toEqual(updatedOrder);
     });
