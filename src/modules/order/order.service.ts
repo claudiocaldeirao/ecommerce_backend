@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrderRecord } from './entity/order-record.entity';
@@ -6,15 +10,21 @@ import { OrderTransaction } from './entity/order-transaction.entity';
 import { OrderInvoice } from './entity/order-invoice.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { Cart } from '../shopping-cart/cart/entity/cart.entity';
+import { CartItem } from '../shopping-cart/cart-item/entity/cart-item.entity';
+import { OrderItem } from './entity/order-item.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(OrderRecord) private orderRepo: Repository<OrderRecord>,
+    @InjectRepository(OrderItem) private orderItemRepo: Repository<OrderItem>,
     @InjectRepository(OrderTransaction)
     private transactionRepo: Repository<OrderTransaction>,
     @InjectRepository(OrderInvoice)
     private invoiceRepo: Repository<OrderInvoice>,
+    @InjectRepository(Cart) private cartRepo: Repository<Cart>,
+    @InjectRepository(CartItem) private cartItemRepo: Repository<CartItem>,
   ) {}
 
   async create(dto: CreateOrderDto): Promise<OrderRecord> {
@@ -54,5 +64,63 @@ export class OrderService {
 
   async remove(id: string): Promise<void> {
     await this.orderRepo.delete(id);
+  }
+
+  async checkoutFromCart(userId: string): Promise<OrderRecord> {
+    const cart = await this.cartRepo.findOne({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+
+    const cartItems = await this.cartItemRepo.find({
+      where: { cart: { id: cart.id } },
+      relations: ['product'],
+    });
+
+    if (cartItems.length === 0) {
+      throw new BadRequestException('Cart is empty');
+    }
+
+    const totalAmount = cartItems.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0,
+    );
+
+    const order = this.orderRepo.create({
+      user_id: userId,
+      status: 'processing',
+    });
+
+    const savedOrder = await this.orderRepo.save(order);
+
+    const orderItems = cartItems.map((item) =>
+      this.orderItemRepo.create({
+        order: savedOrder,
+        product: item.product,
+        quantity: item.quantity,
+        price: item.product.price,
+      }),
+    );
+
+    await this.orderItemRepo.save(orderItems);
+
+    const transaction = this.transactionRepo.create({
+      order: savedOrder,
+      total_amount: totalAmount,
+      description: `Pedido #${savedOrder.id}`,
+    });
+
+    await this.transactionRepo.save(transaction);
+
+    await this.cartItemRepo.delete({ cart: { id: cart.id } });
+
+    return this.orderRepo.findOne({
+      where: { id: savedOrder.id },
+      relations: ['transaction', 'invoice'],
+    });
   }
 }

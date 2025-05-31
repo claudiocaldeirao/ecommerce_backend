@@ -10,6 +10,7 @@ import { UserModule } from '@/modules/user/user.module';
 import { ShoppingCartModule } from '@/modules/shopping-cart/shopping-cart.module';
 import { GracefulShutdownModule } from 'nestjs-graceful-shutdown';
 import { DataSource } from 'typeorm';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { DataSource } from 'typeorm';
     ProductModule,
     UserModule,
     ShoppingCartModule,
+    OrderModule,
   ],
 })
 export class AppModule {}

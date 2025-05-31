@@ -4,9 +4,11 @@ import {
   Column,
   CreateDateColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { OrderInvoice } from './order-invoice.entity';
 import { OrderTransaction } from './order-transaction.entity';
+import { OrderItem } from './order-item.entity';
 
 @Entity('order_record')
 export class OrderRecord {
@@ -27,4 +29,7 @@ export class OrderRecord {
 
   @OneToOne(() => OrderTransaction, (transaction) => transaction.order)
   transaction: OrderTransaction;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
+  items: OrderItem[];
 }
