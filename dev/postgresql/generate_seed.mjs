@@ -293,7 +293,7 @@ CREATE TABLE cart_item (
 CREATE TABLE order_record (
     id SERIAL PRIMARY KEY,
     user_id UUID REFERENCES user_account(id),
-    date TIMESTAMP,
+    date TIMESTAMP DEFAULT now(),
     status VARCHAR(20)
 );
 
@@ -408,6 +408,8 @@ SELECT setval(pg_get_serial_sequence('order_invoice', 'id'), (SELECT COALESCE(MA
 
 -- order_transaction.id
 SELECT setval(pg_get_serial_sequence('order_transaction', 'id'), (SELECT COALESCE(MAX(id), 1) FROM order_transaction));
+  
+SELECT setval(pg_get_serial_sequence('order_item', 'id'), (SELECT COALESCE(MAX(id), 1) FROM order_item));
   `;
 
   console.log(sqlScript);

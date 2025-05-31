@@ -18,7 +18,7 @@ export class OrderTransaction {
   @Column()
   description: string;
 
-  @OneToOne(() => OrderRecord, (order) => order.transaction)
-  @JoinColumn()
+  @OneToOne(() => OrderRecord, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'order_record_id' })
   order: OrderRecord;
 }

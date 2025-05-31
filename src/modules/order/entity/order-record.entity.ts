@@ -19,14 +19,12 @@ export class OrderRecord {
   @CreateDateColumn()
   date: Date;
 
-  @Column({ default: 'PENDING' })
-  status: 'PENDING' | 'PAID' | 'CANCELLED';
+  @Column({ default: 'processing' })
+  status: 'processing' | 'delivered' | 'shipped' | 'cancelled';
 
-  @OneToOne(() => OrderInvoice, (invoice) => invoice.order, { cascade: true })
+  @OneToOne(() => OrderInvoice, (invoice) => invoice.order)
   invoice: OrderInvoice;
 
-  @OneToOne(() => OrderTransaction, (transaction) => transaction.order, {
-    cascade: true,
-  })
+  @OneToOne(() => OrderTransaction, (transaction) => transaction.order)
   transaction: OrderTransaction;
 }

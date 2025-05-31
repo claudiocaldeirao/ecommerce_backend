@@ -84,7 +84,7 @@ CREATE TABLE cart_item (
 CREATE TABLE order_record (
     id SERIAL PRIMARY KEY,
     user_id UUID REFERENCES user_account(id),
-    date TIMESTAMP,
+    date TIMESTAMP DEFAULT now(),
     status VARCHAR(20)
 );
 

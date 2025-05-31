@@ -6,7 +6,7 @@ export class OrderInvoice {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => OrderRecord, (order) => order.invoice)
-  @JoinColumn()
+  @OneToOne(() => OrderRecord, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'order_record_id' })
   order: OrderRecord;
 }
