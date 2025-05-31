@@ -13,6 +13,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { Cart } from '../shopping-cart/cart/entity/cart.entity';
 import { CartItem } from '../shopping-cart/cart-item/entity/cart-item.entity';
 import { OrderItem } from './entity/order-item.entity';
+import { calculateTotalAmount } from './order.utils';
 
 @Injectable()
 export class OrderService {
@@ -85,10 +86,7 @@ export class OrderService {
       throw new BadRequestException('Cart is empty');
     }
 
-    const totalAmount = cartItems.reduce(
-      (total, item) => total + item.product.price * item.quantity,
-      0,
-    );
+    const totalAmount = calculateTotalAmount(cartItems);
 
     const order = this.orderRepo.create({
       user_id: userId,

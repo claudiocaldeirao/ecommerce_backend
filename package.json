@@ -37,6 +37,7 @@
     "@nestjs/typeorm": "^11.0.0",
     "bcrypt": "^6.0.0",
     "class-validator": "^0.14.2",
+    "decimal.js": "^10.5.0",
     "fastify": "5.3.3",
     "joi": "^17.13.3",
     "nestjs-graceful-shutdown": "^1.0.3",
