@@ -2,6 +2,7 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '@/app.module';
+import { Product } from '@/modules/product/entity/product.entity';
 
 describe('E-commerce API E2E', () => {
   let app: INestApplication;
@@ -10,8 +11,8 @@ describe('E-commerce API E2E', () => {
   let token: string;
   let userId: string;
   let cartId: string;
-  let productId: string;
-  let cartItemId: string;
+  let product: Product;
+  const quantity = 3;
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
@@ -28,7 +29,7 @@ describe('E-commerce API E2E', () => {
     const res = await request(server)
       .post('/auth/login')
       .send({
-        email: 'Jordan.Brown@yahoo.com',
+        email: 'John95@gmail.com',
         password: '123',
       })
       .expect(201);
@@ -52,7 +53,7 @@ describe('E-commerce API E2E', () => {
     expect(Array.isArray(res.body)).toBe(true);
     expect(res.body.length).toBeGreaterThan(0);
 
-    productId = res.body[0].id;
+    product = res.body[0];
   });
 
   it('should fetch the user cart', async () => {
@@ -67,25 +68,28 @@ describe('E-commerce API E2E', () => {
 
   it('should add product to cart', async () => {
     const res = await request(server)
-      .post(`/cart-item/${cartId}/product/${productId}`)
+      .post(`/cart-item/${cartId}/product/${product.id}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ quantity: 3 })
+      .send({ quantity: quantity })
       .expect(201);
 
     expect(res.body).toHaveProperty('id');
-    expect(res.body.quantity).toBe(3);
-
-    cartItemId = res.body.id;
+    expect(res.body.quantity).toBe(quantity);
   });
 
-  it('should remove product from cart', async () => {
+  it('should checkout the cart and create a new order', async () => {
     const res = await request(server)
-      .delete(`/cart-item/${cartItemId}`)
+      .post(`/orders/checkout-from-cart`)
       .set('Authorization', `Bearer ${token}`)
-      .expect(200);
+      .expect(201);
 
-    expect(res.body).toHaveProperty('affected');
-    expect(res.body.affected).toBe(1);
+    expect(res.body).toHaveProperty('id');
+    expect(res.body).toHaveProperty('status', 'processing');
+    expect(res.body).toHaveProperty('transaction');
+    expect(res.body.transaction).toHaveProperty('total_amount');
+
+    const totalExpected = (product.price * quantity).toString();
+    expect(res.body.transaction.total_amount).toEqual(totalExpected);
   });
 
   afterAll(async () => {
