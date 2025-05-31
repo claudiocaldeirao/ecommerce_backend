@@ -26,6 +26,8 @@ This document describes the domain structure and core entities of the E-Commerce
   - `id`, `order_id`
 - `order_transaction`:
   - `id`, `total_amount`, `description`
+- `order_item`:
+  - `id`, `order_id`, `product_id`, `quantity`, `price`
 
 ---
 

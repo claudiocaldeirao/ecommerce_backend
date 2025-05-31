@@ -122,13 +122,15 @@ function generateCarts(users, products) {
   return { carts, cartItems };
 }
 
-function generateOrders(users) {
+function generateOrders(users, products) {
   const orders = [];
   const invoices = [];
   const transactions = [];
+  const orderItems = [];
   let orderId = 1;
   let invoiceId = 1;
   let transactionId = 1;
+  let orderItemId = 1;
 
   users.forEach((user) => {
     const orderCount = randomInt(0, NUM_ORDERS_PER_USER);
@@ -151,16 +153,30 @@ function generateOrders(users) {
       });
       transactions.push({
         id: transactionId,
+        order_record_id: orderId,
         total_amount: totalAmount,
         description: `Pedido #${orderId}`,
       });
+      const itemsCount = randomInt(1, 5);
+      for (let j = 0; j < itemsCount; j++) {
+        const product = faker.helpers.arrayElement(products);
+        const quantity = randomInt(1, 10);
+        orderItems.push({
+          id: orderItemId,
+          order_record_id: orderId,
+          product_id: product.id,
+          quantity,
+          price: product.price,
+        });
+        orderItemId++;
+      }
       orderId++;
       invoiceId++;
       transactionId++;
     }
   });
 
-  return { orders, invoices, transactions };
+  return { orders, invoices, transactions, orderItems };
 }
 
 function buildInsert(table, columns, data) {
@@ -186,7 +202,10 @@ function main() {
   const userRoles = generateUserRoles(users, roles);
   const products = generateProducts(NUM_PRODUCTS);
   const { carts, cartItems } = generateCarts(users, products);
-  const { orders, invoices, transactions } = generateOrders(users);
+  const { orders, invoices, transactions, orderItems } = generateOrders(
+    users,
+    products,
+  );
 
   let sqlScript = `-- ===========================
 -- Schema creation
@@ -285,8 +304,17 @@ CREATE TABLE order_invoice (
 
 CREATE TABLE order_transaction (
     id SERIAL PRIMARY KEY,
+    order_record_id INTEGER UNIQUE REFERENCES order_record(id),
     total_amount NUMERIC(10,2),
     description TEXT
+);
+
+CREATE TABLE order_item (
+  id SERIAL PRIMARY KEY,
+  order_record_id INTEGER NOT NULL REFERENCES order_record(id) ON DELETE CASCADE,
+  product_id INTEGER NOT NULL REFERENCES product(id),
+  quantity INTEGER NOT NULL,
+  price NUMERIC(10,2) NOT NULL
 );
 
 -- ===========================
@@ -342,8 +370,13 @@ CREATE TABLE order_transaction (
   );
   sqlScript += buildInsert(
     'order_transaction',
-    ['id', 'total_amount', 'description'],
+    ['id', 'order_record_id', 'total_amount', 'description'],
     transactions,
+  );
+  sqlScript += buildInsert(
+    'order_item',
+    ['id', 'order_record_id', 'product_id', 'quantity', 'price'],
+    orderItems,
   );
 
   sqlScript += `
