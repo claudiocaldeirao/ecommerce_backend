@@ -11,6 +11,7 @@ import { ShoppingCartModule } from '@/modules/shopping-cart/shopping-cart.module
 import { GracefulShutdownModule } from 'nestjs-graceful-shutdown';
 import { DataSource } from 'typeorm';
 import { OrderModule } from './modules/order/order.module';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { OrderModule } from './modules/order/order.module';
     UserModule,
     ShoppingCartModule,
     OrderModule,
+    PaymentModule,
   ],
 })
 export class AppModule {}
