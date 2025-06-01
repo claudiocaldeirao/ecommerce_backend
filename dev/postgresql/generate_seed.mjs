@@ -403,6 +403,9 @@ SELECT setval(pg_get_serial_sequence('cart_item', 'id'), (SELECT COALESCE(MAX(id
 -- order_record.id
 SELECT setval(pg_get_serial_sequence('order_record', 'id'), (SELECT COALESCE(MAX(id), 1) FROM order_record));
 
+-- order_item.id
+SELECT setval(pg_get_serial_sequence('order_item', 'id'), (SELECT COALESCE(MAX(id), 1) FROM order_item));
+
 -- order_invoice.id
 SELECT setval(pg_get_serial_sequence('order_invoice', 'id'), (SELECT COALESCE(MAX(id), 1) FROM order_invoice));
 
