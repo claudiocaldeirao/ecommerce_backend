@@ -1,1 +1,2 @@
+# detect-secrets-hook --baseline .secrets.baseline $(git diff --cached --name-only)
 npm run test
