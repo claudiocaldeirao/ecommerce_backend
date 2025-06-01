@@ -8,12 +8,9 @@ export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post()
-  async create(
-    @Body() body: { orderId: string; amount: number; currency?: string },
-  ) {
+  async create(@Body() body: { orderId: string; currency?: string }) {
     return this.paymentService.createPayment(
       body.orderId,
-      body.amount,
       body.currency || 'usd',
     );
   }
