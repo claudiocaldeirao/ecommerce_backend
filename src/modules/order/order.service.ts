@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { OrderRecord } from './entity/order-record.entity';
 import { OrderTransaction } from './entity/order-transaction.entity';
 import { OrderInvoice } from './entity/order-invoice.entity';
@@ -19,6 +19,7 @@ import { orderStatus } from './constants/order-status.constant';
 @Injectable()
 export class OrderService {
   constructor(
+    private readonly dataSource: DataSource,
     @InjectRepository(OrderRecord) private orderRepo: Repository<OrderRecord>,
     @InjectRepository(OrderItem) private orderItemRepo: Repository<OrderItem>,
     @InjectRepository(OrderTransaction)
@@ -69,57 +70,59 @@ export class OrderService {
   }
 
   async checkoutFromCart(userId: string): Promise<OrderRecord> {
-    const cart = await this.cartRepo.findOne({
-      where: { user: { id: userId } },
-      relations: ['user'],
-    });
+    return await this.dataSource.transaction(async (manager) => {
+      const cart = await this.cartRepo.findOne({
+        where: { user: { id: userId } },
+        relations: ['user'],
+      });
 
-    if (!cart) {
-      throw new NotFoundException('Cart not found');
-    }
+      if (!cart) {
+        throw new NotFoundException('Cart not found');
+      }
 
-    const cartItems = await this.cartItemRepo.find({
-      where: { cart: { id: cart.id } },
-      relations: ['product'],
-    });
+      const cartItems = await this.cartItemRepo.find({
+        where: { cart: { id: cart.id } },
+        relations: ['product'],
+      });
 
-    if (cartItems.length === 0) {
-      throw new BadRequestException('Cart is empty');
-    }
+      if (cartItems.length === 0) {
+        throw new BadRequestException('Cart is empty');
+      }
 
-    const totalAmount = calculateTotalAmount(cartItems);
+      const totalAmount = calculateTotalAmount(cartItems);
 
-    const order = this.orderRepo.create({
-      user_id: userId,
-      status: orderStatus.PROCESSING,
-    });
+      const order = this.orderRepo.create({
+        user_id: userId,
+        status: orderStatus.PROCESSING,
+      });
 
-    const savedOrder = await this.orderRepo.save(order);
+      const savedOrder = await this.orderRepo.save(order);
 
-    const orderItems = cartItems.map((item) =>
-      this.orderItemRepo.create({
+      const orderItems = cartItems.map((item) =>
+        this.orderItemRepo.create({
+          order: savedOrder,
+          product: item.product,
+          quantity: item.quantity,
+          price: item.product.price,
+        }),
+      );
+
+      await this.orderItemRepo.save(orderItems);
+
+      const transaction = this.transactionRepo.create({
         order: savedOrder,
-        product: item.product,
-        quantity: item.quantity,
-        price: item.product.price,
-      }),
-    );
+        total_amount: totalAmount,
+        description: `Pedido #${savedOrder.id}`,
+      });
 
-    await this.orderItemRepo.save(orderItems);
+      await manager.getRepository(OrderTransaction).save(transaction);
 
-    const transaction = this.transactionRepo.create({
-      order: savedOrder,
-      total_amount: totalAmount,
-      description: `Pedido #${savedOrder.id}`,
-    });
+      await manager.getRepository(CartItem).delete({ cart: { id: cart.id } });
 
-    await this.transactionRepo.save(transaction);
-
-    await this.cartItemRepo.delete({ cart: { id: cart.id } });
-
-    return this.orderRepo.findOne({
-      where: { id: savedOrder.id },
-      relations: ['transaction', 'invoice'],
+      return manager.getRepository(OrderRecord).findOne({
+        where: { id: savedOrder.id },
+        relations: ['transaction', 'invoice'],
+      });
     });
   }
 }

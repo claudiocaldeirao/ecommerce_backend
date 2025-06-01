@@ -9,6 +9,7 @@ import { OrderInvoice } from './entity/order-invoice.entity';
 import { Cart } from '../shopping-cart/cart/entity/cart.entity';
 import { CartItem } from '../shopping-cart/cart-item/entity/cart-item.entity';
 import { orderStatus } from './constants/order-status.constant';
+import { DataSource } from 'typeorm';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -46,6 +47,10 @@ describe('OrderService', () => {
     delete: jest.fn(),
   };
 
+  const mockDataSource = {
+    transaction: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -62,6 +67,7 @@ describe('OrderService', () => {
         },
         { provide: getRepositoryToken(Cart), useValue: mockCartRepo },
         { provide: getRepositoryToken(CartItem), useValue: mockCartItemRepo },
+        { provide: DataSource, useValue: mockDataSource },
       ],
     }).compile();
 
@@ -72,7 +78,19 @@ describe('OrderService', () => {
 
   describe('checkoutFromCart', () => {
     it('should throw NotFoundException if cart not found', async () => {
-      mockCartRepo.findOne.mockResolvedValue(null);
+      mockDataSource.transaction.mockImplementation(async (callback) => {
+        const mockManager = {
+          getRepository: (entity) => {
+            if (entity === Cart) {
+              return entity.findOne.mockResolvedValue(null);
+            }
+
+            throw new Error(`No mock defined for repository of: ${entity}`);
+          },
+        };
+
+        return callback(mockManager);
+      });
 
       await expect(service.checkoutFromCart('user-id')).rejects.toThrow(
         NotFoundException,
@@ -114,6 +132,16 @@ describe('OrderService', () => {
         invoice: {},
       };
 
+      mockDataSource.transaction.mockImplementation(async (callback) => {
+        const mockManager = {
+          getRepository: (cartEntity) => {
+            cartEntity.findOne.mockResolvedValue(null);
+          },
+        };
+
+        return callback(mockManager);
+      });
+
       mockCartRepo.findOne.mockResolvedValue(cart);
       mockCartItemRepo.find.mockResolvedValue(cartItems);
       mockOrderRepo.create.mockReturnValue(savedOrder);
@@ -124,6 +152,31 @@ describe('OrderService', () => {
       mockTransactionRepo.save.mockResolvedValue({});
       mockCartItemRepo.delete.mockResolvedValue({});
       mockOrderRepo.findOne.mockResolvedValue(savedOrderWithRelations);
+
+      mockDataSource.transaction.mockImplementation(async (callback) => {
+        const mockManager = {
+          getRepository: (entity) => {
+            switch (entity) {
+              case Cart:
+                return mockCartRepo;
+              case CartItem:
+                return mockCartItemRepo;
+              case OrderRecord:
+                return mockOrderRepo;
+              case OrderItem:
+                return mockOrderItemRepo;
+              case OrderTransaction:
+                return mockTransactionRepo;
+              case OrderInvoice:
+                return mockInvoiceRepo;
+              default:
+                throw new Error(`No mock defined for repository of: ${entity}`);
+            }
+          },
+        };
+
+        return callback(mockManager);
+      });
 
       const result = await service.checkoutFromCart(userId);
 
