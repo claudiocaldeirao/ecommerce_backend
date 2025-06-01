@@ -38,6 +38,11 @@ export class CartItemController {
     return this.cartItemService.removeItem(itemId);
   }
 
+  @Delete(':cartId/items')
+  removeAllItems(@Param('cartId') cartId: number) {
+    return this.cartItemService.removeAllItems(cartId);
+  }
+
   @Get('cart/:cartId')
   getItems(@Param('cartId') cartId: number) {
     return this.cartItemService.findByCart(cartId);

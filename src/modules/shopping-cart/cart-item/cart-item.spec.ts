@@ -173,4 +173,19 @@ describe('CartItemService', () => {
       expect(result).toEqual(items);
     });
   });
+
+  describe('removeAllItems', () => {
+    it('should call cartItemRepo.delete with correct cart id', async () => {
+      const cartId = 123;
+      const mockResult = { affected: 3, raw: {} };
+      cartItemRepo.delete.mockResolvedValue(mockResult);
+
+      const result = await service.removeAllItems(cartId);
+
+      expect(cartItemRepo.delete).toHaveBeenCalledWith({
+        cart: { id: cartId },
+      });
+      expect(result).toEqual(mockResult);
+    });
+  });
 });

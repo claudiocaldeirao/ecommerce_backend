@@ -41,6 +41,10 @@ export class CartItemService {
     return this.cartItemRepo.delete(itemId);
   }
 
+  removeAllItems(cartId: number) {
+    return this.cartItemRepo.delete({ cart: { id: cartId } });
+  }
+
   findByCart(cartId: number) {
     return this.cartItemRepo.find({
       where: { cart: { id: cartId } },

@@ -67,6 +67,13 @@ describe('E-commerce API E2E', () => {
     cartId = res.body.id;
   });
 
+  it('should clean the cart items', async () => {
+    await request(server)
+      .delete(`/cart-item/${cartId}/items`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+  });
+
   it('should add product to cart', async () => {
     const res = await request(server)
       .post(`/cart-item/${cartId}/product/${product.id}`)
