@@ -47,7 +47,7 @@ describe('PaymentService', () => {
 
     const order: OrderRecord = {
       transaction: {
-        total_amount: 2000,
+        total_amount: 1234.56,
         id: '',
         description: '',
         order: new OrderRecord(),
@@ -67,7 +67,7 @@ describe('PaymentService', () => {
     expect(result).toEqual(mockResponse);
     expect(paymentAdapter.createPaymentIntent).toHaveBeenCalledWith(
       'order_001',
-      2000,
+      123456,
       'usd',
     );
   });
