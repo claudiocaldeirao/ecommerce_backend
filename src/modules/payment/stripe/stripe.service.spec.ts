@@ -37,11 +37,14 @@ describe('StripeService', () => {
     const mockResponse = { id: 'pi_123', amount: 1000 };
     createMock.mockResolvedValue(mockResponse);
 
-    const result = await service.createPaymentIntent(1000, 'usd');
+    const result = await service.createPaymentIntent('order_001', 1000, 'usd');
 
     expect(createMock).toHaveBeenCalledWith({
       amount: 1000,
       currency: 'usd',
+      metadata: {
+        orderId: 'order_001',
+      },
     });
     expect(result).toEqual(mockResponse);
   });

@@ -24,9 +24,10 @@ describe('PaymentService', () => {
 
     paymentAdapter.createPaymentIntent.mockResolvedValue(mockResponse);
 
-    const result = await paymentService.createPayment(2000);
+    const result = await paymentService.createPayment('order_001', 2000);
     expect(result).toEqual(mockResponse);
     expect(paymentAdapter.createPaymentIntent).toHaveBeenCalledWith(
+      'order_001',
       2000,
       'usd',
     );

@@ -5,7 +5,11 @@ import { PaymentAdapter } from './payment-adapter.interface';
 export class PaymentService {
   constructor(private readonly paymentAdapter: PaymentAdapter) {}
 
-  async createPayment(amount: number, currency: string = 'usd') {
-    return this.paymentAdapter.createPaymentIntent(amount, currency);
+  async createPayment(
+    orderId: string,
+    amount: number,
+    currency: string = 'usd',
+  ) {
+    return this.paymentAdapter.createPaymentIntent(orderId, amount, currency);
   }
 }

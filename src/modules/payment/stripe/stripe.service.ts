@@ -11,10 +11,17 @@ export class StripeService {
     });
   }
 
-  async createPaymentIntent(amount: number, currency: string = 'usd') {
+  async createPaymentIntent(
+    orderId: string,
+    amount: number,
+    currency: string = 'usd',
+  ) {
     return this.stripe.paymentIntents.create({
       amount,
       currency,
+      metadata: {
+        orderId: orderId,
+      },
     });
   }
 

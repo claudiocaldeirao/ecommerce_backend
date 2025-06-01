@@ -10,10 +10,12 @@ export class StripeAdapter implements PaymentAdapter {
   constructor(private readonly stripeService: StripeService) {}
 
   async createPaymentIntent(
+    orderId: string,
     amount: number,
     currency: string,
   ): Promise<PaymentIntentResponse> {
     const intent = await this.stripeService.createPaymentIntent(
+      orderId,
       amount,
       currency,
     );

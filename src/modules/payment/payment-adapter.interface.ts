@@ -6,6 +6,7 @@ export interface PaymentIntentResponse {
 
 export interface PaymentAdapter {
   createPaymentIntent(
+    orderId: string,
     amount: number,
     currency: string,
   ): Promise<PaymentIntentResponse>;
