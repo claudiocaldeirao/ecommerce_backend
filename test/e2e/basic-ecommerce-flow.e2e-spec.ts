@@ -92,7 +92,7 @@ describe('E-commerce API E2E', () => {
       .expect(201);
 
     expect(res.body).toHaveProperty('id');
-    expect(res.body).toHaveProperty('status', orderStatus.PROCESSING);
+    expect(res.body).toHaveProperty('status', orderStatus.PENDING_PAYMENT);
     expect(res.body).toHaveProperty('transaction');
     expect(res.body.transaction).toHaveProperty('total_amount');
 

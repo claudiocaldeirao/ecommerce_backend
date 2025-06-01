@@ -22,7 +22,7 @@ export class OrderRecord {
   @CreateDateColumn()
   date: Date;
 
-  @Column({ default: orderStatus.PROCESSING })
+  @Column({ default: orderStatus.PENDING_PAYMENT })
   status: OrderStatus;
 
   @OneToOne(() => OrderInvoice, (invoice) => invoice.order)

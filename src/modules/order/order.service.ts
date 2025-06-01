@@ -93,7 +93,7 @@ export class OrderService {
 
       const order = this.orderRepo.create({
         user_id: userId,
-        status: orderStatus.PROCESSING,
+        status: orderStatus.PENDING_PAYMENT,
       });
 
       const savedOrder = await this.orderRepo.save(order);

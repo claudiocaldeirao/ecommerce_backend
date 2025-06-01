@@ -124,7 +124,7 @@ describe('OrderService', () => {
       const savedOrder = {
         id: 'order-id',
         user_id: userId,
-        status: orderStatus.PROCESSING,
+        status: orderStatus.PENDING_PAYMENT,
       };
       const savedOrderWithRelations = {
         ...savedOrder,
@@ -185,7 +185,7 @@ describe('OrderService', () => {
       expect(result).toEqual(savedOrderWithRelations);
       expect(mockOrderRepo.create).toHaveBeenCalledWith({
         user_id: userId,
-        status: orderStatus.PROCESSING,
+        status: orderStatus.PENDING_PAYMENT,
       });
       expect(mockOrderRepo.save).toHaveBeenCalledWith(savedOrder);
       expect(mockOrderItemRepo.create).toHaveBeenCalledTimes(cartItems.length);
@@ -234,7 +234,7 @@ describe('OrderService', () => {
         id: '1',
         user_id: '123456',
         date: undefined,
-        status: orderStatus.PROCESSING,
+        status: orderStatus.PENDING_PAYMENT,
         invoice: new OrderInvoice(),
         transaction: new OrderTransaction(),
         items: [],
