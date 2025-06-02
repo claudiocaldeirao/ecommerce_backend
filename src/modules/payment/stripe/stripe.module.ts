@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { StripeService } from './stripe.service';
-import { StripeAdapter } from './stripe.adapter';
+import { StripeAdapter } from './adapters/stripe.adapter';
 import { StripeWebhookAdapter } from './adapters/stripe.webhook.adapter';
 
 @Module({

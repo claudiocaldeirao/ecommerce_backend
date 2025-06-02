@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { StripeService } from './stripe.service';
+import { StripeService } from '../stripe.service';
 import {
   PaymentAdapter,
   PaymentIntentResponse,
-} from '../payment-adapter.interface';
+} from '../../payment-adapter.interface';
 
 @Injectable()
 export class StripeAdapter implements PaymentAdapter {

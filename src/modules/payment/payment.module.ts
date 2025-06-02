@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PaymentService } from './payment.service';
 import { PaymentController } from './payment.controller';
 import { StripeModule } from './stripe/stripe.module';
-import { StripeAdapter } from './stripe/stripe.adapter';
+import { StripeAdapter } from './stripe/adapters/stripe.adapter';
 import { OrderRecord } from '../order/entity/order-record.entity';
 import { StripeWebhookAdapter } from './stripe/adapters/stripe.webhook.adapter';
 import { WebhookController } from './webhook.controller';
