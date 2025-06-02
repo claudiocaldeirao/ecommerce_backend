@@ -256,4 +256,66 @@ describe('OrderService', () => {
       expect(mockOrderRepo.delete).toHaveBeenCalledWith('1');
     });
   });
+
+  describe('markOrderAsPaid', () => {
+    it('should update the order status to PAID', async () => {
+      mockOrderRepo.update.mockResolvedValue({ affected: 1 });
+
+      await expect(service.markOrderAsPaid('123')).resolves.toBeUndefined();
+      expect(mockOrderRepo.update).toHaveBeenCalledWith(
+        { id: '123' },
+        { status: orderStatus.PAID },
+      );
+    });
+
+    it('should throw NotFoundException if order not found', async () => {
+      mockOrderRepo.update.mockResolvedValue({ affected: 0 });
+
+      await expect(service.markOrderAsPaid('123')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('markOrderAsCancelled', () => {
+    it('should update the order status to CANCELLED', async () => {
+      mockOrderRepo.update.mockResolvedValue({ affected: 1 });
+
+      await expect(
+        service.markOrderAsCancelled('456'),
+      ).resolves.toBeUndefined();
+      expect(mockOrderRepo.update).toHaveBeenCalledWith(
+        { id: '456' },
+        { status: orderStatus.CANCELLED },
+      );
+    });
+
+    it('should throw NotFoundException if order not found', async () => {
+      mockOrderRepo.update.mockResolvedValue({ affected: 0 });
+
+      await expect(service.markOrderAsCancelled('456')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('markOrderAsFailed', () => {
+    it('should update the order status to PAYMENT_FAILED', async () => {
+      mockOrderRepo.update.mockResolvedValue({ affected: 1 });
+
+      await expect(service.markOrderAsFailed('789')).resolves.toBeUndefined();
+      expect(mockOrderRepo.update).toHaveBeenCalledWith(
+        { id: '789' },
+        { status: orderStatus.PAYMENT_FAILED },
+      );
+    });
+
+    it('should throw NotFoundException if order not found', async () => {
+      mockOrderRepo.update.mockResolvedValue({ affected: 0 });
+
+      await expect(service.markOrderAsFailed('789')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
 });
