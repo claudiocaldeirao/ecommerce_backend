@@ -14,4 +14,5 @@ export const validationSchema = Joi.object({
   JWT_EXPIRATION_TIME: Joi.string().default('1h'),
   BCRYPT_SALT_ROUNDS: Joi.number().default(10),
   STRIPE_SECRET_KEY: Joi.string().required(),
+  STRIPE_WEBHOOK_SECRET: Joi.string().required(),
 });
