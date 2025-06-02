@@ -8,6 +8,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { AppModule } from '@/app.module';
 import { ExceptionsFilter } from '@/common/filters/exceptions.filter';
+import fastifyRawBody from 'fastify-raw-body';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -34,6 +35,18 @@ async function bootstrap() {
 
   setupGracefulShutdown({ app });
   app.useGlobalFilters(new ExceptionsFilter());
+
+  await app
+    .getHttpAdapter()
+    .getInstance()
+    .register(fastifyRawBody, {
+      field: 'rawBody',
+      global: false,
+      runFirst: true,
+      encoding: 'utf8',
+      routes: ['/webhook'],
+    });
+
   await app.listen(process.env.API_PORT || 3000, '0.0.0.0');
 }
 bootstrap();

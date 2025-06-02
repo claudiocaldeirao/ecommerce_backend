@@ -39,6 +39,7 @@
     "class-validator": "^0.14.2",
     "decimal.js": "^10.5.0",
     "fastify": "5.3.3",
+    "fastify-raw-body": "^5.0.0",
     "joi": "^17.13.3",
     "nestjs-graceful-shutdown": "^1.0.3",
     "passport-jwt": "^4.0.1",
