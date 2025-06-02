@@ -1,6 +1,10 @@
 // webhook.adapter.ts
-import { FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 
 export interface WebhookAdapter {
-  handleWebhook(request: FastifyRequest, rawBody: string): Promise<void>;
+  handleWebhook(
+    request: FastifyRequest,
+    response: FastifyReply,
+    rawBody: string,
+  ): Promise<void>;
 }
