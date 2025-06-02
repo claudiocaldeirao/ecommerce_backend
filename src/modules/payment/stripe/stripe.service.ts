@@ -25,6 +25,14 @@ export class StripeService {
     });
   }
 
+  async constructEvent(signature: string | string[], body: string) {
+    return this.stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET,
+    );
+  }
+
   async retrievePaymentIntent(id: string) {
     return this.stripe.paymentIntents.retrieve(id);
   }

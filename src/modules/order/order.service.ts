@@ -125,4 +125,37 @@ export class OrderService {
       });
     });
   }
+
+  async markOrderAsPaid(orderId: string) {
+    const result = await this.orderRepo.update(
+      { id: orderId },
+      { status: orderStatus.PAID },
+    );
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Order with id ${orderId} not found`);
+    }
+  }
+
+  async markOrderAsCancelled(orderId: string) {
+    const result = await this.orderRepo.update(
+      { id: orderId },
+      { status: orderStatus.CANCELLED },
+    );
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Order with id ${orderId} not found`);
+    }
+  }
+
+  async markOrderAsFailed(orderId: string) {
+    const result = await this.orderRepo.update(
+      { id: orderId },
+      { status: orderStatus.PAYMENT_FAILED },
+    );
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Order with id ${orderId} not found`);
+    }
+  }
 }

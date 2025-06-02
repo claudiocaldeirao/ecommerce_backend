@@ -44,7 +44,7 @@ async function bootstrap() {
       global: false,
       runFirst: true,
       encoding: 'utf8',
-      routes: ['/webhook'],
+      routes: ['/v1/webhook'],
     });
 
   await app.listen(process.env.API_PORT || 3000, '0.0.0.0');
