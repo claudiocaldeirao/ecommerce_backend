@@ -76,8 +76,8 @@ src/
 │   │    ├── order-invoice      # implemented
 │   │    └── order-transaction  # implemented
 │   ├── user/                   # implemented
-│   ├── payment/
-│   │    └── stripe
+│   ├── payment/                # implemented
+│   │    └── stripe             # implemented
 │   ├── shipping/
 │   ├── auth/                   # implemented
 │   ├── promotion/
