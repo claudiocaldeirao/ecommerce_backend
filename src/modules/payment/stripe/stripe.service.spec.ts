@@ -8,17 +8,21 @@ describe('StripeService', () => {
   let service: StripeService;
   let createMock: jest.Mock;
   let retrieveMock: jest.Mock;
+  let constructEventMock: jest.Mock;
 
   beforeEach(async () => {
     createMock = jest.fn();
     retrieveMock = jest.fn();
-
+    constructEventMock = jest.fn();
     const StripeMockConstructor = Stripe as unknown as jest.Mock;
 
     StripeMockConstructor.mockImplementation(() => ({
       paymentIntents: {
         create: createMock,
         retrieve: retrieveMock,
+      },
+      webhooks: {
+        constructEvent: constructEventMock,
       },
     }));
 
@@ -57,5 +61,35 @@ describe('StripeService', () => {
 
     expect(retrieveMock).toHaveBeenCalledWith('pi_123');
     expect(result).toEqual(mockIntent);
+  });
+
+  describe('constructEvent', () => {
+    const body = '{"id":"evt_123","object":"event"}';
+    const signature = 'sig_test';
+    const secret = 'whsec_test_secret';
+
+    beforeEach(() => {
+      process.env.STRIPE_WEBHOOK_SECRET = secret;
+    });
+
+    it('should call stripe.webhooks.constructEvent with correct arguments', async () => {
+      const expectedEvent = { id: 'evt_123', object: 'event' };
+      constructEventMock.mockReturnValue(expectedEvent);
+
+      const result = await service.constructEvent(signature, body);
+
+      expect(constructEventMock).toHaveBeenCalledWith(body, signature, secret);
+      expect(result).toBe(expectedEvent);
+    });
+
+    it('should throw an error if constructEvent fails', async () => {
+      constructEventMock.mockImplementation(() => {
+        throw new Error('Invalid signature');
+      });
+
+      await expect(service.constructEvent(signature, body)).rejects.toThrow(
+        'Invalid signature',
+      );
+    });
   });
 });
